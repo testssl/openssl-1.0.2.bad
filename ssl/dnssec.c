@@ -1,8 +1,11 @@
 #include <openssl/opensslconf.h>
-
 #include <string.h>
+#ifdef WIN32
+#include <Winsock2.h>
+#else
 #include <netdb.h>
 #include <sys/socket.h>
+#endif
 #include <openssl/bio.h>
 #include <openssl/dso.h>
 
