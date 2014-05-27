@@ -17,11 +17,11 @@ AFLAGS= $(ASFLAGS)
 CHACHA_ENC=chacha_enc.o
 
 GENERAL=Makefile
-TEST=chachatest.o
+TEST=chachatest.c
 APPS=
 
 LIB=$(TOP)/libcrypto.a
-LIBSRC=
+LIBSRC=chacha_vec.c
 LIBOBJ=$(CHACHA_ENC)
 
 SRC= $(LIBSRC)
@@ -77,4 +77,3 @@ clean:
 	rm -f *.o *.obj lib tags core .pure .nfs* *.old *.bak fluff
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-
