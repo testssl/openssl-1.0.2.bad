@@ -1290,6 +1290,39 @@ static int aes_gcm_ctrl(EVP_CIPHER_CTX *c, int type, int arg, void *ptr)
 		}
 	}
 
+static ctr128_f aes_gcm_set_key(AES_KEY *aes_key, GCM128_CONTEXT *gcm_ctx,
+				const unsigned char *key, size_t key_len)
+	{
+#ifdef BSAES_CAPABLE
+		if (BSAES_CAPABLE)
+			{
+			AES_set_encrypt_key(key,key_len*8,aes_key);
+			CRYPTO_gcm128_init(gcm_ctx,aes_key,
+					(block128_f)AES_encrypt);
+			return (ctr128_f)bsaes_ctr32_encrypt_blocks;
+			}
+#endif
+#ifdef VPAES_CAPABLE
+		if (VPAES_CAPABLE)
+			{
+			vpaes_set_encrypt_key(key,key_len*8,aes_key);
+			CRYPTO_gcm128_init(gcm_ctx,aes_key,
+					(block128_f)vpaes_encrypt);
+			return NULL;
+			}
+		else
+#endif
+		(void)0;	/* terminate potentially open 'else' */
+
+	AES_set_encrypt_key(key, key_len*8, aes_key);
+	CRYPTO_gcm128_init(gcm_ctx, aes_key, (block128_f)AES_encrypt);
+#ifdef AES_CTR_ASM
+	return (ctr128_f)AES_ctr32_encrypt;
+#else
+	return NULL;
+#endif
+	}
+
 static int aes_gcm_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key,
                         const unsigned char *iv, int enc)
 	{

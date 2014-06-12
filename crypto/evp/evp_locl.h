@@ -351,6 +351,30 @@ int PKCS5_v2_PBKDF2_keyivgen(EVP_CIPHER_CTX *ctx, const char *pass, int passlen,
 const EVP_MD *evp_get_fips_md(const EVP_MD *md);
 const EVP_CIPHER *evp_get_fips_cipher(const EVP_CIPHER *cipher);
 
+/* EVP_AEAD represents a specific AEAD algorithm. */
+struct evp_aead_st {
+	unsigned char key_len;
+	unsigned char nonce_len;
+	unsigned char overhead;
+	unsigned char max_tag_len;
+
+	int (*init) (struct evp_aead_ctx_st*, const unsigned char *key,
+		     size_t key_len, size_t tag_len);
+	void (*cleanup) (struct evp_aead_ctx_st*);
+
+	ssize_t (*seal) (const struct evp_aead_ctx_st *ctx,
+			 unsigned char *out, size_t max_out_len,
+			 const unsigned char *nonce, size_t nonce_len,
+			 const unsigned char *in, size_t in_len,
+			 const unsigned char *ad, size_t ad_len);
+
+	ssize_t (*open) (const struct evp_aead_ctx_st *ctx,
+			 unsigned char *out, size_t max_out_len,
+			 const unsigned char *nonce, size_t nonce_len,
+			 const unsigned char *in, size_t in_len,
+			 const unsigned char *ad, size_t ad_len);
+};
+
 #ifdef OPENSSL_FIPS
 
 #ifdef OPENSSL_DOING_MAKEDEPEND
