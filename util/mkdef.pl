@@ -86,6 +86,7 @@ my @known_algorithms = ( "RC2", "RC4", "RC5", "IDEA", "DES", "BF",
 			 "SHA256", "SHA512", "RIPEMD",
 			 "MDC2", "WHIRLPOOL", "RSA", "DSA", "DH", "EC", "ECDH", "ECDSA", "EC2M",
 			 "HMAC", "AES", "CAMELLIA", "SEED", "GOST",
+                         "CHACHA", "POLY1305",
 			 # EC_NISTP_64_GCC_128
 			 "EC_NISTP_64_GCC_128",
 			 # Envelope "algorithms"
@@ -295,6 +296,8 @@ $crypto.=" crypto/ripemd/ripemd.h" ; # unless $no_ripemd;
 $crypto.=" crypto/aes/aes.h" ; # unless $no_aes;
 $crypto.=" crypto/camellia/camellia.h" ; # unless $no_camellia;
 $crypto.=" crypto/seed/seed.h"; # unless $no_seed;
+$crypto.=" crypto/poly1305/poly1305.h";
+$crypto.=" crypto/chacha/chacha.h";
 
 $crypto.=" crypto/bn/bn.h";
 $crypto.=" crypto/rsa/rsa.h" ; # unless $no_rsa;

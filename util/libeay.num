@@ -4312,3 +4312,17 @@ BIO_dgram_sctp_wait_for_dry             4679	EXIST::FUNCTION:SCTP
 BIO_s_datagram_sctp                     4680	EXIST::FUNCTION:DGRAM,SCTP
 BIO_dgram_is_sctp                       4681	EXIST::FUNCTION:SCTP
 BIO_dgram_sctp_notification_cb          4682	EXIST::FUNCTION:SCTP
+EVP_AEAD_CTX_init                       4683	EXIST::FUNCTION:
+EVP_AEAD_CTX_cleanup                    4684	EXIST::FUNCTION:
+EVP_AEAD_CTX_seal                       4685	EXIST::FUNCTION:
+EVP_AEAD_CTX_open                       4686	EXIST::FUNCTION:
+EVP_aead_chacha20_poly1305              4687	EXIST::FUNCTION:CHACHA,POLY1305
+EVP_AEAD_max_tag_len                    4688	EXIST::FUNCTION:
+EVP_AEAD_nonce_length                   4689	EXIST::FUNCTION:
+EVP_AEAD_key_length                     4690	EXIST::FUNCTION:
+EVP_AEAD_max_overhead                   4691	EXIST::FUNCTION:
+EVP_aead_aes_128_gcm                    4692	EXIST::FUNCTION:AES
+CRYPTO_poly1305_update                  4693	EXIST::FUNCTION:
+CRYPTO_poly1305_finish                  4694	EXIST::FUNCTION:
+CRYPTO_poly1305_init                    4695	EXIST::FUNCTION:
+CRYPTO_chacha_20                        4696	EXIST::FUNCTION:
