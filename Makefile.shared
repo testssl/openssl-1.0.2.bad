@@ -262,9 +262,9 @@ link_o.cygwin:
 	base=-Wl,--enable-auto-image-base; \
 	deffile=; \
 	if expr $(PLATFORM) : 'mingw' > /dev/null; then \
-		SHLIB=$(LIBNAME)eay32; base=; \
-		if test -f $(LIBNAME)eay32.def; then \
-			deffile=$(LIBNAME)eay32.def; \
+		SHLIB=$(LIBNAME); base=; \
+		if test -f $(LIBNAME).def; then \
+			deffile=$(LIBNAME).def; \
 		fi; \
 	fi; \
 	SHLIB_SUFFIX=.dll; \

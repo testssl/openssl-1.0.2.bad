@@ -50,6 +50,8 @@
 
 # Executables
 /apps/openssl
+/apps/openssl.*
+/test/*.exe
 /test/sha256t
 /test/sha512t
 /test/*test
@@ -62,6 +64,7 @@
 /test/fips_ecdsavs
 /test/fips_rngvs
 /test/fips_test_suite
+/testlog
 *.so*
 *.dylib*
 *.dll*
@@ -70,8 +73,14 @@
 !/crypto/des/times/486-50.sol
 
 # Misc auto generated files
+/cctest.*
+/*.log
+*.rej
+/*.patch
 /tools/c_rehash
 /test/evptests.txt
 lib
 Makefile.save
 *.bak
+*.orig
+
