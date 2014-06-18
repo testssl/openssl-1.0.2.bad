@@ -38,6 +38,7 @@ B<openssl> B<s_client>
 [B<-bugs>]
 [B<-cipher cipherlist>]
 [B<-starttls protocol>]
+[B<-proxy host:port>]
 [B<-engine id>]
 [B<-tlsextdebug>]
 [B<-no_ticket>]
@@ -210,6 +211,12 @@ command for more information.
 send the protocol-specific message(s) to switch to TLS for communication.
 B<protocol> is a keyword for the intended protocol.  Currently, the only
 supported keywords are "smtp", "pop3", "imap", and "ftp".
+
+=item B<-proxy host:port>
+
+connect over HTTP proxy. "host:port" of -proxy option is used for the
+TCP connect to the proxy and the HTTP CONNECT command is called with
+"host:port" of the -connect option.
 
 =item B<-tlsextdebug>
 

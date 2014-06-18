@@ -288,7 +288,7 @@ static void sc_usage(void)
 	BIO_printf(bio_err," -host host     - use -connect instead\n");
 	BIO_printf(bio_err," -port port     - use -connect instead\n");
 	BIO_printf(bio_err," -connect host:port - who to connect to (default is %s:%s)\n",SSL_HOST_NAME,PORT_STR);
-
+	BIO_printf(bio_err," -proxy host:port - use HTTP proxy to connect\n");
 	BIO_printf(bio_err," -verify arg   - turn on peer certificate verification\n");
 	BIO_printf(bio_err," -cert arg     - certificate file to use, PEM format assumed\n");
 	BIO_printf(bio_err," -certform arg - certificate format (PEM or DER) PEM default\n");
@@ -568,6 +568,7 @@ int MAIN(int argc, char **argv)
 	int sbuf_len,sbuf_off;
 	fd_set readfds,writefds;
 	short port=PORT;
+        char *http_proxy_str=NULL, *connect_str=NULL;
 	int full_log=1;
 	char *host=SSL_HOST_NAME;
 	char *cert_file=NULL,*key_file=NULL;
@@ -674,9 +675,13 @@ int MAIN(int argc, char **argv)
 		else if (strcmp(*argv,"-connect") == 0)
 			{
 			if (--argc < 1) goto bad;
-			if (!extract_host_port(*(++argv),&host,NULL,&port))
-				goto bad;
+                        connect_str=*(++argv);
 			}
+		else if (strcmp(*argv,"-proxy") == 0)
+                        {
+                        if (--argc < 1) goto bad;
+                        http_proxy_str=*(++argv);
+                        }                
 		else if	(strcmp(*argv,"-verify") == 0)
 			{
 			verify=SSL_VERIFY_PEER;
@@ -976,6 +981,18 @@ int MAIN(int argc, char **argv)
 		argc--;
 		argv++;
 		}
+
+        if (http_proxy_str)
+		{
+		if (!extract_host_port(http_proxy_str,&host,NULL,&port))
+			goto bad;
+		}
+	else if (connect_str)
+            {
+              if (!extract_host_port(connect_str,&host,NULL,&port))
+                goto bad;
+            }
+        
 	if (badop)
 		{
 bad:
@@ -1494,6 +1511,29 @@ SSL_set_tlsext_status_ids(con, ids);
 			goto shut;
 		mbuf[0] = 0;
 		}
+        
+        if (http_proxy_str)
+          {
+            int foundit=0;
+            BIO *fbio = BIO_new(BIO_f_buffer());
+            BIO_push(fbio, sbio);
+            BIO_printf(fbio,"CONNECT %s\r\n\r\n", connect_str);
+            (void)BIO_flush(fbio);
+            /* wait for multi-line response to end CONNECT response */
+            do
+              {
+                mbuf_len = BIO_gets(fbio,mbuf,BUFSIZZ);
+                if (strstr(mbuf,"200") &&
+                    strstr(mbuf,"established"))
+                  foundit++;
+              }
+            while (mbuf_len>3 && foundit == 0);
+            (void)BIO_flush(fbio);
+            BIO_pop(fbio);
+            BIO_free(fbio);
+            if (!foundit)
+              BIO_printf(bio_err, "HTTP CONNECT failed\n");
+          }
 
 	for (;;)
 		{
