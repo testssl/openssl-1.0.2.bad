@@ -27,9 +27,9 @@
  */
 #define OPENSSL_VERSION_NUMBER	0x10001090L
 #ifdef OPENSSL_FIPS
-#define OPENSSL_VERSION_TEXT	"OpenSSL 1.0.1i-fips-dev xx XXX xxxx"
+#define OPENSSL_VERSION_TEXT	"OpenSSL 1.0.1-chacha (1.0.1i-fips-dev)"
 #else
-#define OPENSSL_VERSION_TEXT	"OpenSSL 1.0.1i-dev xx XXX xxxx"
+#define OPENSSL_VERSION_TEXT	"OpenSSL 1.0.1-chacha (1.01i-dev)"
 #endif
 #define OPENSSL_VERSION_PTEXT	" part of " OPENSSL_VERSION_TEXT
 
