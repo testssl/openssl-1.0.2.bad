@@ -21,7 +21,7 @@ TEST=chachatest.c
 APPS=
 
 LIB=$(TOP)/libcrypto.a
-LIBSRC=chacha_vec.c
+LIBSRC=chacha_enc.c
 LIBOBJ=$(CHACHA_ENC)
 
 SRC= $(LIBSRC)
@@ -77,3 +77,6 @@ clean:
 	rm -f *.o *.obj lib tags core .pure .nfs* *.old *.bak fluff
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
+
+chacha_enc.o: ../../include/openssl/chacha.h
+chacha_enc.o: ../../include/openssl/opensslconf.h chacha_enc.c

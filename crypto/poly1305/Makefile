@@ -10,7 +10,7 @@ INCLUDES=
 CFLAG=-g
 AR=		ar r
 
-POLY1305=poly1305_vec.o
+POLY1305=poly1305_enc.o
 
 CFLAGS= $(INCLUDES) $(CFLAG)
 ASFLAGS= $(INCLUDES) $(ASFLAG)
@@ -21,7 +21,7 @@ TEST=poly1305test.c
 APPS=
 
 LIB=$(TOP)/libcrypto.a
-LIBSRC=poly1305_vec.c
+LIBSRC=poly1305.c
 LIBOBJ=$(POLY1305)
 
 SRC= $(LIBSRC)
@@ -77,3 +77,6 @@ clean:
 	rm -f *.o *.obj lib tags core .pure .nfs* *.old *.bak fluff
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
+
+poly1305.o: ../../include/openssl/opensslconf.h
+poly1305.o: ../../include/openssl/poly1305.h poly1305.c
