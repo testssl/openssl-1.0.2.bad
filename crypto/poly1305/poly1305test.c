@@ -51,6 +51,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if !defined(OPENSSL_NO_POLY1305)
+
 #include <openssl/poly1305.h>
 
 struct poly1305_test
@@ -164,3 +166,12 @@ int main()
 	printf("PASS\n");
 	return 0;
 	}
+#else /* OPENSSL_NO_POLY1305 */
+
+int main(int argc, char *argv[])
+	{
+          fprintf(stderr, "No Poly1305 support\n");
+		return EXIT_SUCCESS;
+	}
+
+#endif /* OPENSSL_NO_POLY1305 */

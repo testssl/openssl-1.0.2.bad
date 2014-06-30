@@ -60,6 +60,8 @@
 #include <string.h>
 #include <stdint.h>
 
+#if !defined(OPENSSL_NO_CHACHA)
+
 #include <openssl/chacha.h>
 
 struct chacha_test {
@@ -209,3 +211,13 @@ int main()
 	printf("PASS\n");
 	return 0;
 	}
+
+#else /* OPENSSL_NO_CHACHA */
+
+int main(int argc, char *argv[])
+	{
+          fprintf(stderr, "No ChaCha20 support\n");
+		return EXIT_SUCCESS;
+	}
+
+#endif /* OPENSSL_NO_CHACHA */
