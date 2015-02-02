@@ -4571,7 +4571,7 @@ SSL_CIPHER *ssl3_choose_cipher(SSL *s, STACK_OF(SSL_CIPHER) *clnt,
 #endif                          /* OPENSSL_NO_KRB5 */
 #ifndef OPENSSL_NO_PSK
         /* with PSK there must be server callback set */
-        if ((alg_k & (SSL_kPSKK | SSL_kRSAPSK)) && s->psk_server_callback == NULL)
+        if ((alg_k & (SSL_kPSK | SSL_kRSAPSK)) && s->psk_server_callback == NULL)
             continue;
 #endif                          /* OPENSSL_NO_PSK */
 
