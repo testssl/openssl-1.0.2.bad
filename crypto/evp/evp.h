@@ -1499,6 +1499,7 @@ void ERR_load_EVP_strings(void);
 # define EVP_F_DSA_PKEY2PKCS8                             135
 # define EVP_F_ECDSA_PKEY2PKCS8                           129
 # define EVP_F_ECKEY_PKEY2PKCS8                           132
+# define EVP_F_EVP_AEAD_CTX_INIT                          180
 # define EVP_F_EVP_CIPHERINIT_EX                          123
 # define EVP_F_EVP_CIPHER_CTX_COPY                        163
 # define EVP_F_EVP_CIPHER_CTX_CTRL                        124
