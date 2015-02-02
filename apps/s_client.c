@@ -1707,8 +1707,7 @@ int MAIN(int argc, char **argv)
         mbuf[0] = 0;
     }
 
-        if (http_proxy_str)
-          {
+    if (http_proxy_str) {
             int foundit=0;
             BIO *fbio = BIO_new(BIO_f_buffer());
             BIO_push(fbio, sbio);
@@ -1728,9 +1727,8 @@ int MAIN(int argc, char **argv)
             BIO_free(fbio);
             if (!foundit)
               BIO_printf(bio_err, "HTTP CONNECT failed\n");
-          }
-	if (starttls_proto == PROTO_LDAP)
-		{
+    }
+	if (starttls_proto == PROTO_LDAP) {
 		char *ldap_tls_genconf= "asn1=SEQUENCE:LDAPMessage\n"
 					"[LDAPMessage]\n"
 					"messageID=INTEGER:1\n"
@@ -1748,166 +1746,6 @@ int MAIN(int argc, char **argv)
 
 		BIO_printf(sbio, (const char *) atyp->value.sequence->data, host);
 		BIO_read(sbio,sbuf,BUFSIZZ);
-
-		BIO_free(ldapbio);
-        if (http_proxy_str)
-          {
-            int foundit=0;
-            BIO *fbio = BIO_new(BIO_f_buffer());
-            BIO_push(fbio, sbio);
-            BIO_printf(fbio,"CONNECT %s\r\n\r\n", connect_str);
-            (void)BIO_flush(fbio);
-            /* wait for multi-line response to end CONNECT response */
-            do
-              {
-                mbuf_len = BIO_gets(fbio,mbuf,BUFSIZZ);
-                if (strstr(mbuf,"200") &&
-                    strstr(mbuf,"established"))
-                  foundit++;
-              }
-            while (mbuf_len>3 && foundit == 0);
-            (void)BIO_flush(fbio);
-            BIO_pop(fbio);
-            BIO_free(fbio);
-            if (!foundit)
-              BIO_printf(bio_err, "HTTP CONNECT failed\n");
-          }
-	if (starttls_proto == PROTO_LDAP)
-		{
-		char *ldap_tls_genconf= "asn1=SEQUENCE:LDAPMessage\n"
-					"[LDAPMessage]\n"
-					"messageID=INTEGER:1\n"
-					"extendedReq=EXPLICIT:23A,IMPLICIT:0C,FORMAT:ASCII,OCT:1.3.6.1.4.1.1466.20037\n";
-		long errline;
-		char *genstr;
-		ASN1_TYPE *atyp = NULL;
-		CONF *cnf = NCONF_new(NULL);
-		BIO *ldapbio = BIO_new(BIO_s_mem());
-
-		BIO_puts(ldapbio, ldap_tls_genconf);
-		NCONF_load_bio(cnf, ldapbio, &errline);
-		genstr = NCONF_get_string(cnf, "default", "asn1");
-		atyp = ASN1_generate_nconf(genstr, cnf);
-
-		BIO_printf(sbio, (const char *) atyp->value.sequence->data, host);
-		BIO_read(sbio,sbuf,BUFSIZZ);
-
-        if (http_proxy_str)
-          {
-            int foundit=0;
-            BIO *fbio = BIO_new(BIO_f_buffer());
-            BIO_push(fbio, sbio);
-            BIO_printf(fbio,"CONNECT %s\r\n\r\n", connect_str);
-            (void)BIO_flush(fbio);
-            /* wait for multi-line response to end CONNECT response */
-            do
-              {
-                mbuf_len = BIO_gets(fbio,mbuf,BUFSIZZ);
-                if (strstr(mbuf,"200") &&
-                    strstr(mbuf,"established"))
-                  foundit++;
-              }
-            while (mbuf_len>3 && foundit == 0);
-            (void)BIO_flush(fbio);
-            BIO_pop(fbio);
-            BIO_free(fbio);
-            if (!foundit)
-              BIO_printf(bio_err, "HTTP CONNECT failed\n");
-          }
-	if (starttls_proto == PROTO_LDAP)
-		{
-		char *ldap_tls_genconf= "asn1=SEQUENCE:LDAPMessage\n"
-					"[LDAPMessage]\n"
-					"messageID=INTEGER:1\n"
-					"extendedReq=EXPLICIT:23A,IMPLICIT:0C,FORMAT:ASCII,OCT:1.3.6.1.4.1.1466.20037\n";
-		long errline;
-		char *genstr;
-		ASN1_TYPE *atyp = NULL;
-		CONF *cnf = NCONF_new(NULL);
-		BIO *ldapbio = BIO_new(BIO_s_mem());
-
-		BIO_puts(ldapbio, ldap_tls_genconf);
-		NCONF_load_bio(cnf, ldapbio, &errline);
-		genstr = NCONF_get_string(cnf, "default", "asn1");
-		atyp = ASN1_generate_nconf(genstr, cnf);
-
-		BIO_printf(sbio, (const char *) atyp->value.sequence->data, host);
-        if (http_proxy_str)
-          {
-            int foundit=0;
-            BIO *fbio = BIO_new(BIO_f_buffer());
-            BIO_push(fbio, sbio);
-            BIO_printf(fbio,"CONNECT %s\r\n\r\n", connect_str);
-            (void)BIO_flush(fbio);
-            /* wait for multi-line response to end CONNECT response */
-            do
-              {
-                mbuf_len = BIO_gets(fbio,mbuf,BUFSIZZ);
-                if (strstr(mbuf,"200") &&
-                    strstr(mbuf,"established"))
-                  foundit++;
-              }
-            while (mbuf_len>3 && foundit == 0);
-            (void)BIO_flush(fbio);
-            BIO_pop(fbio);
-            BIO_free(fbio);
-            if (!foundit)
-              BIO_printf(bio_err, "HTTP CONNECT failed\n");
-          }
-	if (starttls_proto == PROTO_LDAP) {
-		char *ldap_tls_genconf= "asn1=SEQUENCE:LDAPMessage\n"
-					"[LDAPMessage]\n"
-					"messageID=INTEGER:1\n"
-					"extendedReq=EXPLICIT:23A,IMPLICIT:0C,FORMAT:ASCII,OCT:1.3.6.1.4.1.1466.20037\n";
-		long errline;
-		char *genstr;
-		ASN1_TYPE *atyp = NULL;
-		CONF *cnf = NCONF_new(NULL);
-		BIO *ldapbio = BIO_new(BIO_s_mem());
-
-		BIO_puts(ldapbio, ldap_tls_genconf);
-		NCONF_load_bio(cnf, ldapbio, &errline);
-		genstr = NCONF_get_string(cnf, "default", "asn1");
-		atyp = ASN1_generate_nconf(genstr, cnf);
-
-        if (http_proxy_str) {
-            int foundit=0;
-            BIO *fbio = BIO_new(BIO_f_buffer());
-            BIO_push(fbio, sbio);
-            BIO_printf(fbio,"CONNECT %s\r\n\r\n", connect_str);
-            (void)BIO_flush(fbio);
-            /* wait for multi-line response to end CONNECT response */
-            do {
-                mbuf_len = BIO_gets(fbio,mbuf,BUFSIZZ);
-                if (strstr(mbuf,"200") &&
-                    strstr(mbuf,"established"))
-                  foundit++;
-            }
-            while (mbuf_len>3 && foundit == 0);
-            (void)BIO_flush(fbio);
-            BIO_pop(fbio);
-            BIO_free(fbio);
-            if (!foundit)
-              BIO_printf(bio_err, "HTTP CONNECT failed\n");
-          }
-	if (starttls_proto == PROTO_LDAP) {
-		char *ldap_tls_genconf= "asn1=SEQUENCE:LDAPMessage\n"
-					"[LDAPMessage]\n"
-					"messageID=INTEGER:1\n"
-					"extendedReq=EXPLICIT:23A,IMPLICIT:0C,FORMAT:ASCII,OCT:1.3.6.1.4.1.1466.20037\n";
-		long errline;
-		char *genstr;
-		ASN1_TYPE *atyp = NULL;
-		CONF *cnf = NCONF_new(NULL);
-		BIO *ldapbio = BIO_new(BIO_s_mem());
-
-		BIO_puts(ldapbio, ldap_tls_genconf);
-		NCONF_load_bio(cnf, ldapbio, &errline);
-		genstr = NCONF_get_string(cnf, "default", "asn1");
-		atyp = ASN1_generate_nconf(genstr, cnf);
-
-        BIO_printf(sbio, (const char *) atyp->value.sequence->data, host);
-        BIO_read(sbio, sbuf, BUFSIZZ);
 
 		BIO_free(ldapbio);
         NCONF_free(cnf);

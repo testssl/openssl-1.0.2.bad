@@ -1188,7 +1188,7 @@ int main(int argc, char *argv[])
         goto end;
     }
 
-	if (ssl2 + ssl3 + tls1 + tls1_1 + tls1_2 > 1)
+	if (ssl2 + ssl3 + tls1 + tls1_1 + tls1_2 > 1) {
         fprintf(stderr, "At most one of -ssl2, -ssl3, -tls1, tls1_1 or -tls1_2 should "
                 "be requested.\n");
         EXIT(1);
@@ -3048,36 +3048,32 @@ static int do_test_cipherlist(void)
 	fprintf(stderr, "testing TLSv1 cipher list order: ");
 	meth = TLSv1_1_method();
 	tci = NULL;
-        i=0;
-	while ((ci = meth->get_cipher(i++)) != NULL)
-		{
-                fprintf(stderr,".");
-		if (tci != NULL)
-			if (ci->id >= tci->id)
-				{
-				fprintf(stderr, "failed %lx vs. %lx\n", ci->id, tci->id);
-				return 0;
-				}
-		tci = ci;
-		}
+    i = 0;
+	while ((ci = meth->get_cipher(i++)) != NULL) {
+        fprintf(stderr, ".");
+        if (tci != NULL)
+            if (ci->id >= tci->id) {
+                fprintf(stderr, "failed %lx vs. %lx\n", ci->id, tci->id);
+                return 0;
+            }
+        tci = ci;
+    }
 	fprintf(stderr, " ok\n");
 #endif /* OPENSSL_NO_TLS1_1 */
 #ifndef OPENSSL_NO_TLS1_2
 	fprintf(stderr, "testing TLSv1 cipher list order: ");
 	meth = TLSv1_2_method();
 	tci = NULL;
-        i=0;
-	while ((ci = meth->get_cipher(i++)) != NULL)
-		{
-                fprintf(stderr,".");
-                if (tci != NULL)
-			if (ci->id >= tci->id)
-				{
-				fprintf(stderr, "failed %lx vs. %lx\n", ci->id, tci->id);
-				return 0;
-				}
+    i = 0;
+	while ((ci = meth->get_cipher(i++)) != NULL) {
+        fprintf(stderr, ".");
+        if (tci != NULL)
+            if (ci->id >= tci->id) {
+                fprintf(stderr, "failed %lx vs. %lx\n", ci->id, tci->id);
+                return 0;
+            }
 		tci = ci;
-		}
+    }
 	fprintf(stderr, " ok\n");
 #endif /* OPENSSL_NO_TLS1_2 */
 

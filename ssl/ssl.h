@@ -2828,9 +2828,12 @@ void ERR_load_SSL_strings(void);
 # define SSL_F_SSL_USE_RSAPRIVATEKEY_FILE                 206
 # define SSL_F_SSL_VERIFY_CERT_CHAIN                      207
 # define SSL_F_SSL_WRITE                                  208
+# define SSL_F_TLS1_AEAD_CTX_INIT			              339
 # define SSL_F_TLS12_CHECK_PEER_SIGALG                    333
 # define SSL_F_TLS1_CERT_VERIFY_MAC                       286
 # define SSL_F_TLS1_CHANGE_CIPHER_STATE                   209
+# define SSL_F_TLS1_CHANGE_CIPHER_STATE_AEAD              340
+# define SSL_F_TLS1_CHANGE_CIPHER_STATE_CIPHER            338
 # define SSL_F_TLS1_CHECK_SERVERHELLO_TLSEXT              274
 # define SSL_F_TLS1_ENC                                   210
 # define SSL_F_TLS1_EXPORT_KEYING_MATERIAL                314
