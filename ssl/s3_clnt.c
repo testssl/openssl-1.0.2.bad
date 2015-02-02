@@ -1573,7 +1573,7 @@ int ssl3_get_key_exchange(SSL *s)
             pkey = X509_get_pubkey(s->session->
                                    sess_cert->peer_pkeys[SSL_PKEY_DSA_SIGN].x509);
 # endif
-		} else
+	  else
       if (alg_k & (SSL_kRSA                   
 # ifndef OPENSSL_NO_PSK
 		     | SSL_kRSAPSK
