@@ -21,6 +21,9 @@ B<openssl enc -ciphername>
 [B<-S salt>]
 [B<-salt>]
 [B<-nosalt>]
+[B<-pbkdf2>]
+[B<-c number>]
+[B<-d>]
 [B<-z>]
 [B<-md>]
 [B<-p>]
@@ -110,6 +113,16 @@ encrypting (this is the default).
 =item B<-S salt>
 
 the actual salt to use: this must be represented as a string of hex digits.
+
+=item B<-S pbkdf2>
+
+use the PBKDF2 algorithm to stretch a password into a key.
+SHA1 will be used if no other message digest (using -md) has been specified.
+Generate a longer key (modulo keysize) if specified more than once.
+
+=item B<-c number>
+
+the number of iterations that PBKDF2 will use.
 
 =item B<-K key>
 

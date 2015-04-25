@@ -56,6 +56,7 @@
  * [including the GNU Public Licence.]
  */
 
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -109,10 +110,15 @@ int MAIN(int argc, char **argv)
     int ret = 1, inl;
     int nopad = 0;
     unsigned char key[EVP_MAX_KEY_LENGTH], iv[EVP_MAX_IV_LENGTH];
-    unsigned char salt[PKCS5_SALT_LEN];
+    unsigned char salt[EVP_MAX_KEY_LENGTH];
     char *str = NULL, *passarg = NULL, *pass = NULL;
     char *hkey = NULL, *hiv = NULL, *hsalt = NULL;
     char *md = NULL;
+    unsigned char key_iv[EVP_MAX_KEY_LENGTH + EVP_MAX_IV_LENGTH];
+    int use_pbkdf2 = 0;
+    unsigned long iter_count = 1;
+    static const int max_dk_multiplier = 5;
+    unsigned char dk_keys[max_dk_multiplier + 1][EVP_MAX_KEY_LENGTH];
     int enc = 1, printkey = 0, i, base64 = 0;
 #ifdef ZLIB
     int do_zlib = 0;
@@ -273,7 +279,20 @@ int MAIN(int argc, char **argv)
             cipher = c;
         } else if (strcmp(*argv, "-none") == 0)
             cipher = NULL;
-        else {
+        else if (strcmp(*argv,"-c") == 0) {
+            if (--argc < 1) goto bad;
+            const char *iter_count_str = *(++argv);
+            iter_count = strtoul(iter_count_str, NULL, 10);
+            if ((LONG_MIN == iter_count || LONG_MAX == iter_count)
+                && ERANGE == errno)
+                goto bad;
+            if (iter_count < 0 || iter_count > INT_MAX)
+                goto bad;
+        } else if (strcmp(*argv, "-pbkdf2") == 0) {
+            use_pbkdf2++;
+            if (use_pbkdf2 > max_dk_multiplier)
+                use_pbkdf2 = max_dk_multiplier;
+        } else {
             BIO_printf(bio_err, "unknown option '%s'\n", *argv);
  bad:
             BIO_printf(bio_err, "options are\n");
@@ -294,12 +313,14 @@ int MAIN(int argc, char **argv)
                        "%-14s the next argument is the md to use to create a key\n",
                        "-md");
             BIO_printf(bio_err,
-                       "%-14s   from a passphrase.  One of md2, md5, sha or sha1\n",
+                       "%-14s   from a passphrase.  One of md2, md5, sha, sha1, sha256, sha384 or sha512\n",
                        "");
             BIO_printf(bio_err, "%-14s salt in hex is the next argument\n",
                        "-S");
             BIO_printf(bio_err, "%-14s key/iv in hex is the next argument\n",
                        "-K/-iv");
+            BIO_printf(bio_err, "%-14s use PBKDF2 (repeat option to retrieve multiple keys)\n", "-pbkdf2");
+            BIO_printf(bio_err, "%-14s PBKDF2 iteration count\n", "-c");
             BIO_printf(bio_err, "%-14s print the iv/key (then exit if -P)\n",
                        "-[pP]");
             BIO_printf(bio_err, "%-14s buffer size\n", "-bufsize <n>");
@@ -536,9 +557,27 @@ int MAIN(int argc, char **argv)
 
                 sptr = salt;
             }
-
-            EVP_BytesToKey(cipher, dgst, sptr,
-                           (unsigned char *)str, strlen(str), 1, key, iv);
+            if (use_pbkdf2) {
+                /*
+                 * Default to SHA1 if no message digest has been chosen
+                 */
+                if (!md)
+                    md = "sha1";
+                dgst = EVP_get_digestbyname(md);
+                PKCS5_PBKDF2_HMAC((unsigned char *)str, strlen(str),
+                                  (unsigned char *)salt, strlen(salt),
+                                  iter_count, dgst,
+                                  ( cipher->key_len * use_pbkdf2) + cipher->iv_len,
+                                  key_iv);
+                for (i = 0; i <= use_pbkdf2; i++)
+                    strncpy(dk_keys[i], key_iv + (i * cipher->key_len), cipher->key_len);
+                strncpy(key, dk_keys[0], cipher->key_len);
+                strncpy(iv, key_iv + ((i -1) * cipher->key_len), cipher->iv_len);
+            } else {
+                EVP_BytesToKey(cipher, dgst, sptr,
+                               (unsigned char *)str, strlen(str),
+                               (int)iter_count, key, iv);
+            }
             /*
              * zero the complete buffer or the string passed from the command
              * line bug picked up by Larry J. Hughes Jr. <hughes@indiana.edu>
@@ -614,6 +653,15 @@ int MAIN(int argc, char **argv)
                 for (i = 0; i < cipher->key_len; i++)
                     printf("%02X", key[i]);
                 printf("\n");
+                if (use_pbkdf2 > 1) {
+                    int n;
+                    for (n = 1; n < use_pbkdf2; n++) {
+                        printf("key%d=", (n + 1));
+                        for (i = 0; i < cipher->key_len; i++)
+                            printf("%02X", dk_keys[n][i]);
+                        printf("\n");
+                    }
+                }
             }
             if (cipher->iv_len > 0) {
                 printf("iv =");
@@ -679,7 +727,6 @@ int set_hex(char *in, unsigned char *out, int size)
 {
     int i, n;
     unsigned char j;
-
     n = strlen(in);
     if (n > (size * 2)) {
         BIO_printf(bio_err, "hex string is too long\n");
