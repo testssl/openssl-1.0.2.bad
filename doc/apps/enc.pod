@@ -30,6 +30,9 @@ B<openssl enc -ciphername>
 [B<-debug>]
 [B<-none>]
 [B<-engine id>]
+[B<-pbkdf2>]
+[B<-iter number>]
+[B<-dklen number>]
 
 =head1 DESCRIPTION
 
@@ -157,6 +160,19 @@ or zlib-dynamic option.
 =item B<-none>
 
 Use NULL cipher (no encryption or decryption of input).
+
+=item B<-pbkdf2>
+
+create and print a key using the PBKDF2 function. Specify the pseudorandom
+function using the -md parameter. This function does not do any encryption.
+
+=item B<-iter>
+
+specify the number of rounds for PBKDF2.
+
+=item B<-dklen number>
+
+specify the derived key length for PBKDF2 in bytes.
 
 =back
 
@@ -319,6 +335,11 @@ Base64 decode a file then decrypt it:
 Decrypt some data using a supplied 40 bit RC4 key:
 
  openssl rc4-40 -in file.rc4 -out file.txt -K 0102030405
+
+Derive a 128 bit key using PBKDF2, SHA 256 and 4096 rounds using
+password "password" and salt "salt"
+
+ openssl enc -pbkdf2 -md sha256 -iter 4096 -pass pass:password -S 73616c74
 
 =head1 BUGS
 

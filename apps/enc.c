@@ -110,9 +110,12 @@ int MAIN(int argc, char **argv)
     int nopad = 0;
     unsigned char key[EVP_MAX_KEY_LENGTH], iv[EVP_MAX_IV_LENGTH];
     unsigned char salt[PKCS5_SALT_LEN];
+    unsigned char bigsalt[EVP_MAX_MD_SIZE];
     char *str = NULL, *passarg = NULL, *pass = NULL;
     char *hkey = NULL, *hiv = NULL, *hsalt = NULL;
     char *md = NULL;
+    int pbkdf2 = 0, dklen = 32, iter = 1;
+    unsigned char dk[256]; /* arbitrary length */
     int enc = 1, printkey = 0, i, base64 = 0;
 #ifdef ZLIB
     int do_zlib = 0;
@@ -273,7 +276,19 @@ int MAIN(int argc, char **argv)
             cipher = c;
         } else if (strcmp(*argv, "-none") == 0)
             cipher = NULL;
-        else {
+        else if (strcmp(*argv, "-pbkdf2") == 0)
+            pbkdf2 = 1;
+        else if (strcmp(*argv,"-iter") == 0) {
+            if (--argc < 1)
+                goto bad;
+            iter = atoi(*(++argv));
+        } else if (strcmp(*argv, "-dklen") == 0) {
+            if (--argc < 1)
+                goto bad;
+            dklen = atoi(*(++argv));
+            if (dklen >= 256)
+                goto bad;
+        } else {
             BIO_printf(bio_err, "unknown option '%s'\n", *argv);
  bad:
             BIO_printf(bio_err, "options are\n");
@@ -293,9 +308,7 @@ int MAIN(int argc, char **argv)
             BIO_printf(bio_err,
                        "%-14s the next argument is the md to use to create a key\n",
                        "-md");
-            BIO_printf(bio_err,
-                       "%-14s   from a passphrase.  One of md2, md5, sha or sha1\n",
-                       "");
+            BIO_printf(bio_err, "%-14s   from a passphrase.\n", "");
             BIO_printf(bio_err, "%-14s salt in hex is the next argument\n",
                        "-S");
             BIO_printf(bio_err, "%-14s key/iv in hex is the next argument\n",
@@ -311,6 +324,11 @@ int MAIN(int argc, char **argv)
                        "-engine e");
 #endif
 
+            BIO_printf(bio_err, "%-14s use PBKDF2 with specified md to derive a key,\n",
+                       "-pbkdf2");
+            BIO_printf(bio_err, "%-14s   print it and exit.\n", "");
+            BIO_printf(bio_err, "%-14s PBKDF2 iteration count (default 1)\n", "-iter");
+            BIO_printf(bio_err, "%-14s the PBKDF2 derived keylength in bytes (default 32)\n", "-dklen");
             BIO_printf(bio_err, "Cipher Types\n");
             OBJ_NAME_do_all_sorted(OBJ_NAME_TYPE_CIPHER_METH,
                                    show_ciphers, bio_err);
@@ -487,6 +505,32 @@ int MAIN(int argc, char **argv)
             wbio = BIO_push(b64, wbio);
         else
             rbio = BIO_push(b64, rbio);
+    }
+
+    if (pbkdf2) {
+        int saltlen = 0;
+        if (str == NULL) {
+            BIO_printf(bio_err, "PBKDF2 needs a password\n");
+            goto end;
+        }
+        if (hsalt) {
+            /* round up */
+            saltlen = ((strlen(hsalt) + (2 - 1)) / 2);
+            if (!set_hex(hsalt, bigsalt, saltlen)) {
+                BIO_printf(bio_err, "invalid hex salt value\n");
+                goto end;
+            }
+        }
+        PKCS5_PBKDF2_HMAC(str, strlen(str),
+                          bigsalt, saltlen,
+                          iter, dgst, dklen, dk);
+        printf("key=");
+        for (i = 0; i < dklen; i++)
+            printf("%02X", dk[i]);
+        printf("\n");
+        OPENSSL_cleanse(dk, dklen);
+        ret = 0;
+        goto end;
     }
 
     if (cipher != NULL) {
