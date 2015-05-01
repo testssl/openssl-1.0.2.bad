@@ -115,7 +115,7 @@ int MAIN(int argc, char **argv)
     char *hkey = NULL, *hiv = NULL, *hsalt = NULL;
     char *md = NULL;
     int pbkdf2 = 0, dklen = 32, iter = 1;
-    unsigned char dk[256]; /* arbitrary length */
+    unsigned char dk[BSIZE];
     int enc = 1, printkey = 0, i, base64 = 0;
 #ifdef ZLIB
     int do_zlib = 0;
@@ -286,7 +286,7 @@ int MAIN(int argc, char **argv)
             if (--argc < 1)
                 goto bad;
             dklen = atoi(*(++argv));
-            if (dklen >= 256)
+            if (dklen >= BSIZE)
                 goto bad;
         } else {
             BIO_printf(bio_err, "unknown option '%s'\n", *argv);
