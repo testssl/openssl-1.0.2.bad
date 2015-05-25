@@ -2653,6 +2653,7 @@ void ERR_load_SSL_strings(void);
 # define SSL_F_GET_CLIENT_MASTER_KEY                      107
 # define SSL_F_GET_SERVER_FINISHED                        108
 # define SSL_F_GET_SERVER_HELLO                           109
+# define SSL_F_GET_SERVER_STATIC_DH_KEY                   340
 # define SSL_F_GET_SERVER_VERIFY                          110
 # define SSL_F_I2D_SSL_SESSION                            111
 # define SSL_F_READ_N                                     112
@@ -2830,11 +2831,11 @@ void ERR_load_SSL_strings(void);
 # define SSL_F_SSL_USE_RSAPRIVATEKEY_FILE                 206
 # define SSL_F_SSL_VERIFY_CERT_CHAIN                      207
 # define SSL_F_SSL_WRITE                                  208
-# define SSL_F_TLS1_AEAD_CTX_INIT                         339
+# define SSL_F_TLS1_AEAD_CTX_INIT                         342
 # define SSL_F_TLS12_CHECK_PEER_SIGALG                    333
 # define SSL_F_TLS1_CERT_VERIFY_MAC                       286
 # define SSL_F_TLS1_CHANGE_CIPHER_STATE                   209
-# define SSL_F_TLS1_CHANGE_CIPHER_STATE_AEAD              340
+# define SSL_F_TLS1_CHANGE_CIPHER_STATE_AEAD              343
 # define SSL_F_TLS1_CHANGE_CIPHER_STATE_CIPHER            341
 # define SSL_F_TLS1_CHECK_SERVERHELLO_TLSEXT              274
 # define SSL_F_TLS1_ENC                                   210
@@ -2921,6 +2922,7 @@ void ERR_load_SSL_strings(void);
 # define SSL_R_DATA_LENGTH_TOO_LONG                       146
 # define SSL_R_DECRYPTION_FAILED                          147
 # define SSL_R_DECRYPTION_FAILED_OR_BAD_RECORD_MAC        281
+# define SSL_R_DH_KEY_TOO_SMALL                           372
 # define SSL_R_DH_PUBLIC_VALUE_LENGTH_IS_WRONG            148
 # define SSL_R_DIGEST_CHECK_FAILED                        149
 # define SSL_R_DTLS_MESSAGE_TOO_BIG                       334
