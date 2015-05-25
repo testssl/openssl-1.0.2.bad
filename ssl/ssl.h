@@ -595,6 +595,10 @@ struct ssl_session_st {
 /* Refers to ancient SSLREF and SSLv2, retained for compatibility */
 # define SSL_OP_SSLREF2_REUSE_CERT_TYPE_BUG              0x0
 
+/* Disables sending any TLS extensions in client hello, even if required
+ * by used protocol version, ciphers or other options */
+# define SSL_OP_NO_TLSEXT                                0x00000400L
+
 /*
  * Disable SSL 3.0/TLS 1.0 CBC vulnerability workaround that was added in
  * OpenSSL 0.9.6d.  Usually (depending on the application protocol) the
@@ -2831,11 +2835,11 @@ void ERR_load_SSL_strings(void);
 # define SSL_F_SSL_USE_RSAPRIVATEKEY_FILE                 206
 # define SSL_F_SSL_VERIFY_CERT_CHAIN                      207
 # define SSL_F_SSL_WRITE                                  208
-# define SSL_F_TLS1_AEAD_CTX_INIT                         339
+# define SSL_F_TLS1_AEAD_CTX_INIT                         342
 # define SSL_F_TLS12_CHECK_PEER_SIGALG                    333
 # define SSL_F_TLS1_CERT_VERIFY_MAC                       286
 # define SSL_F_TLS1_CHANGE_CIPHER_STATE                   209
-# define SSL_F_TLS1_CHANGE_CIPHER_STATE_AEAD              340
+# define SSL_F_TLS1_CHANGE_CIPHER_STATE_AEAD              343
 # define SSL_F_TLS1_CHANGE_CIPHER_STATE_CIPHER            341
 # define SSL_F_TLS1_CHECK_SERVERHELLO_TLSEXT              274
 # define SSL_F_TLS1_ENC                                   210
