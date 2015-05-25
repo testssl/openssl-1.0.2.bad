@@ -24,21 +24,25 @@ See [https://www.onwebsecurity.com/openssl/the-work-flow-of-the-full-featured-op
 Please see [https://www.onwebsecurity.com/openssl/replacing-chacha20poly1305-a-new-owner](https://www.onwebsecurity.com/openssl/replacing-chacha20poly1305-a-new-owner) for information about the future of the current ChaCha20 / Poly1305 code.
 
 #### Additions
+##### Ciphers
 * Added ChaCha20 and Poly1305 ciphers (backported from the upstream 1.0.2-aead branch)
 * [Added TLS-RSA-PSK ciphers](https://github.com/PeterMosmans/openssl/commit/ba47950a02a380413f3e5dbf8d94a89eb9e2fb42)
 * [Added SHA256 CAMELLIA ciphers (cherry-picked from the upstream master branch)](https://github.com/PeterMosmans/openssl/commit/535e141f0e9df912232a6bd2ece72f30945962a1)
 * [Added HMAC based CAMELLIA ciphers](https://github.com/PeterMosmans/openssl/commit/8efbb71e40b99e86741aafd6a3c95b941a26e5ce)
 * [Enabled experimental features](https://github.com/PeterMosmans/openssl/commit/8c722ce5fb005a1886e2d76e788cc3441592490e)
 * [Enabled even more ciphers](https://github.com/PeterMosmans/openssl/commit/c77a5fc708c9e88bce2c0c742f419ac908cd44d)
-* [Test all SSL ciphers by default (RT #2584)](https://github.com/PeterMosmans/openssl/commit/85f54b0907f8b7bd67336b742b162effb154ed20)
-* Additions to s_client:
-  * -proxy (RT #2651)
-  * -starttls telnet (RT #2451)
-  * [-starttls xmpp improvement (RT #2860)](https://github.com/PeterMosmans/openssl/commit/854eb9c88da8b742c1d77a11058fcd0d4036c0da)
-  * [-starttls ldap support (RT #2665)](https://github.com/PeterMosmans/openssl/commit/f7e338776d998cb2f2d9ff133473cc87b337821a)
-  * [-fix Windows blocking (RT #3464)](https://github.com/PeterMosmans/openssl/commit/68ab9b308e173072e5015063be7e194bec1f311f)
+
+##### s_client
+* [-no_tlsext addition] (https://github.com/PeterMosmans/openssl/commit/c1348037c3bdf6a2c024f3572f0d1141b5d57e4f)
+* -proxy (RT #2651)
+* -starttls telnet (RT #2451)
+* [-starttls xmpp improvement (RT #2860)](https://github.com/PeterMosmans/openssl/commit/854eb9c88da8b742c1d77a11058fcd0d4036c0da)
+* [-starttls ldap support (RT #2665)](https://github.com/PeterMosmans/openssl/commit/f7e338776d998cb2f2d9ff133473cc87b337821a)
+* [-fix Windows blocking (RT #3464)](https://github.com/PeterMosmans/openssl/commit/68ab9b308e173072e5015063be7e194bec1f311f)
+##### generic
 * Minor changes to Makefiles to simplify building using the mingw / mingw64 platform on Windows
-  * [-universal build time instead of local build time](https://github.com/PeterMosmans/openssl/commit/51cf1c9043efdc06937c0d3550ff8f6fd8e43e1f)
+* [-universal build time instead of local build time](https://github.com/PeterMosmans/openssl/commit/51cf1c9043efdc06937c0d3550ff8f6fd8e43e1f)
+* [Test all SSL ciphers by default (RT #2584)](https://github.com/PeterMosmans/openssl/commit/85f54b0907f8b7bd67336b742b162effb154ed20)
 
 
 #### Thanks to
@@ -53,9 +57,26 @@ The OpenSSL version string of these binaries (#define OPENSSL_VERSION_TEXT) incl
 
 Please see the official OpenSSL repository for all relevant license / copyright info. This repository is merely a fork of their great work with some minimal merges, additions and changes.
 
+#### GOST support
+Note that you'll have to make sure that your openssl.cnf contains the following lines to use GOST ciphers:
+
+```
+openssl_conf=openssl_def
+
+[openssl_def]
+engines=engine_section
+
+[engine_section]
+gost=gost_section
+
+[gost_section]
+default_algorithms=ALL
+CRYPT_PARAMS=id-Gost28147-89-CryptoPro-A-ParamSet
+```
 
 #### Supported ciphers
 Currently 183
+
 ```
 openssl ciphers -l -V "ALL:COMPLEMENTOFALL"
 
