@@ -4413,7 +4413,7 @@ ECDSA_METHOD_get_app_data               4770	EXIST::FUNCTION:ECDSA
 X509_VERIFY_PARAM_add1_host             4771	EXIST::FUNCTION:
 EC_GROUP_get_mont_data                  4772	EXIST::FUNCTION:EC
 i2d_re_X509_tbs                         4773	EXIST::FUNCTION:
-CRYPTO_poly1305_update                  4774	EXIST::FUNCTION:
+EVP_PKEY_asn1_set_item                  4774	EXIST::FUNCTION:
 EVP_AEAD_CTX_init                       4775	EXIST::FUNCTION:
 EVP_AEAD_CTX_cleanup                    4776	EXIST::FUNCTION:
 EVP_AEAD_CTX_seal                       4777	EXIST::FUNCTION:
@@ -4426,3 +4426,4 @@ CRYPTO_poly1305_finish                  4783	EXIST::FUNCTION:
 CRYPTO_poly1305_init                    4784	EXIST::FUNCTION:
 EVP_AEAD_max_overhead                   4785	EXIST::FUNCTION:
 CRYPTO_chacha_20                        4786	EXIST::FUNCTION:
+CRYPTO_poly1305_update                  4787	EXIST::FUNCTION:
