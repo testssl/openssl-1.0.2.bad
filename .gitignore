@@ -33,6 +33,7 @@
 
 /test/*.ss
 /test/*.srl
+/test/*.txt
 /test/.rnd
 /test/test*.pem
 /test/newkey.pem
