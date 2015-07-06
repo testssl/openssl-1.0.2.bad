@@ -407,6 +407,7 @@ static void sc_usage(void)
                "                 only \"smtp\", \"pop3\", \"imap\", \"ftp\", \"xmpp\"\n");
     BIO_printf(bio_err, "                 \"telnet\" and \"ldap\" are supported.\n");
     BIO_printf(bio_err, "                 are supported.\n");
+    BIO_printf(bio_err," -xmpphost host - When used with \"-starttls xmpp\" specifies the virtual host.\n");
 #ifndef OPENSSL_NO_ENGINE
     BIO_printf(bio_err,
                " -engine id    - Initialise and use the specified engine\n");
@@ -675,6 +676,7 @@ int MAIN(int argc, char **argv)
     char *http_proxy_str = NULL, *connect_str = NULL;    
     int full_log = 1;
     char *host = SSL_HOST_NAME;
+    char *xmpphost = NULL;
     char *cert_file = NULL, *key_file = NULL, *chain_file = NULL;
     int cert_format = FORMAT_PEM, key_format = FORMAT_PEM;
     char *passarg = NULL, *pass = NULL;
@@ -806,6 +808,9 @@ int MAIN(int argc, char **argv)
             if (--argc < 1)
                 goto bad;
             http_proxy_str = *(++argv);
+        } else if (strcmp(*argv,"-xmpphost") == 0) {
+           if (--argc < 1) goto bad;
+           xmpphost= *(++argv);
         } else if (strcmp(*argv, "-verify") == 0) {
             verify = SSL_VERIFY_PEER;
             if (--argc < 1)
@@ -1690,7 +1695,7 @@ int MAIN(int argc, char **argv)
         BIO_printf(sbio, "<stream:stream "
                    "xmlns:stream='http://etherx.jabber.org/streams' "
                    "xmlns='jabber:client' to='%s' version='1.0'>",
-                   servername ? servername : host);
+                   xmpphost ? xmpphost : host);
         seen = BIO_read(sbio, mbuf, BUFSIZZ);
         mbuf[seen] = 0;
         while (!strstr
