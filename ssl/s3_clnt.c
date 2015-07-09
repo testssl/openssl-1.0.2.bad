@@ -3609,7 +3609,7 @@ if (alg_k & (SSL_kRSA
         goto f_err;
     }
 # endif
-
+/** Removed check on purpose to allow DH parameters <768
     if (alg_k & (SSL_kDHE | SSL_kDHr | SSL_kDHd)) {
         int dh_size;
         if (alg_k & SSL_kDHE) {
@@ -3628,6 +3628,7 @@ if (alg_k & (SSL_kRSA
             goto f_err;
         }
     }
+**/
 #endif  /* !OPENSSL_NO_DH */
 
     if (SSL_C_IS_EXPORT(s->s3->tmp.new_cipher) &&
