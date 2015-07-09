@@ -10,8 +10,11 @@ You're looking at the 1.0.2-chacha branch, which aligns with the OpenSSL_1_0_2-s
 The main reason of the fork is to include ChaCha20, Poly1305, other (experimental/insecure) ciphers, and to add some extra features to s_client. It should compile 'as least as good' as the official OpenSSL_1_0_2-stable branch.
 
 #### Latest news
-This branch contains the fix for CVE-2015-1793 from 19-07-2015.
-Currently it also contains the 'fixes' for CVE-2015-4000 fro 11-06-2015. These fixes reject handshakes with DH parameters shorter than 768 bits. As this branch is mainly for security assessment purposesThis restriction will be removed in this branch.
+This branch is up to date with the OpenSSL 1.0.2d version, and contains the fix for CVE-2015-1793 from 19-07-2015.
+
+#### Security notices
+Please note that some security restrictions have been removed on purpose: In contrast of the official fork, this version of openssl for instance [does not restrict the size of DH parameters restriction](https://github.com/PeterMosmans/openssl/commit/1fb62ccc6360a4c29fc24fbc0ec82508356752fc). It also enables an extra number of ciphers, so please be aware to explicity enable only those ciphers that you trust.
+
 
 #### Goals
 The main goals of this fork are
@@ -35,6 +38,7 @@ Please see [https://www.onwebsecurity.com/openssl/replacing-chacha20poly1305-a-n
 * [Added HMAC based CAMELLIA ciphers](https://github.com/PeterMosmans/openssl/commit/8efbb71e40b99e86741aafd6a3c95b941a26e5ce)
 * [Enabled experimental features](https://github.com/PeterMosmans/openssl/commit/8c722ce5fb005a1886e2d76e788cc3441592490e)
 * [Enabled even more ciphers](https://github.com/PeterMosmans/openssl/commit/c77a5fc708c9e88bce2c0c742f419ac908cd44d)
+* [Removed the DH parameters restriction](https://github.com/PeterMosmans/openssl/commit/1fb62ccc6360a4c29fc24fbc0ec82508356752fc)
 
 ##### s_client
 * [-no_tlsext addition] (https://github.com/PeterMosmans/openssl/commit/c1348037c3bdf6a2c024f3572f0d1141b5d57e4f)
