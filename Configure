@@ -7,6 +7,7 @@ eval 'exec perl -S $0 ${1+"$@"}'
 
 require 5.000;
 use strict;
+use File::Which;
 
 # see INSTALL for instructions.
 
@@ -1674,6 +1675,8 @@ if ($strict_warnings)
 		}
 	}
 
+my $makedepend_exe_path = which('makedepend');
+
 open(IN,'<Makefile.org') || die "unable to read Makefile.org:$!\n";
 unlink("$Makefile.new") || die "unable to remove old $Makefile.new:$!\n" if -e "$Makefile.new";
 open(OUT,">$Makefile.new") || die "unable to create $Makefile.new:$!\n";
@@ -1722,6 +1725,10 @@ while (<IN>)
 		s/^AR=\s*ar/AR= $ar/;
 		s/^RANLIB=.*/RANLIB= $ranlib/;
 		s/^MAKEDEPPROG=.*$/MAKEDEPPROG= $cc/ if $cc eq "gcc";
+		}
+	if ($makedepend_exe_path eq "")
+		{
+		s/^MAKEDEPPROG=\s*makedepend.*$/MAKEDEPPROG= \$\(CC\) -v -M/;
 		}
 	s/^CFLAG=.*$/CFLAG= $cflags/;
 	s/^DEPFLAG=.*$/DEPFLAG=$depflags/;
