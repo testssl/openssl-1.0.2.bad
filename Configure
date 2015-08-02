@@ -7,7 +7,6 @@ eval 'exec perl -S $0 ${1+"$@"}'
 
 require 5.000;
 use strict;
-use File::Which;
 
 # see INSTALL for instructions.
 
@@ -1675,7 +1674,15 @@ if ($strict_warnings)
 		}
 	}
 
-my $makedepend_exe_path = which('makedepend');
+# http://perldoc.perl.org/perlop.html#Quote-Like-Operators
+# ensure to take the stdout and stderror so we get output like this:
+# 'makedepend: error:  cannot open "Makefile.makedepend" 
+#'.
+my $makedepend_output = `makedepend -f Makefile.makedepend 2>&1`;
+if (!$makedepend_output)
+  {
+  print "No makedepend executable found on your path.\n";
+  }
 
 open(IN,'<Makefile.org') || die "unable to read Makefile.org:$!\n";
 unlink("$Makefile.new") || die "unable to remove old $Makefile.new:$!\n" if -e "$Makefile.new";
@@ -1726,7 +1733,7 @@ while (<IN>)
 		s/^RANLIB=.*/RANLIB= $ranlib/;
 		s/^MAKEDEPPROG=.*$/MAKEDEPPROG= $cc/ if $cc eq "gcc";
 		}
-	if ($makedepend_exe_path eq "")
+	if (!$makedepend_output)
 		{
 		s/^MAKEDEPPROG=\s*makedepend.*$/MAKEDEPPROG= \$\(CC\) -v -M/;
 		}
