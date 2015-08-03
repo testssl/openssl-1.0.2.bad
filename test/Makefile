@@ -72,6 +72,7 @@ POLY1305TEST=	poly1305test
 AEADTEST=	aeadtest
 CONSTTIMETEST=  constant_time_test
 VERIFYEXTRATEST=	verify_extra_test
+CLIENTHELLOTEST=	clienthellotest
 
 TESTS=		alltests
 
@@ -85,7 +86,8 @@ EXE=	$(BNTEST)$(EXE_EXT) $(ECTEST)$(EXE_EXT)  $(ECDSATEST)$(EXE_EXT) $(ECDHTEST)
 	$(EVPTEST)$(EXE_EXT) $(EVPEXTRATEST)$(EXE_EXT) $(IGETEST)$(EXE_EXT) $(JPAKETEST)$(EXE_EXT) $(SRPTEST)$(EXE_EXT) \
 	$(ASN1TEST)$(EXE_EXT) $(V3NAMETEST)$(EXE_EXT) $(HEARTBEATTEST)$(EXE_EXT) \
 	$(CHACHATEST)$(EXE_EXT) $(POLY1305TEST)$(EXE_EXT) $(AEADTEST)$(EXE_EXT) \
-	$(CONSTTIMETEST)$(EXE_EXT) $(VERIFYEXTRATEST)$(EXE_EXT)
+	$(CONSTTIMETEST)$(EXE_EXT) $(VERIFYEXTRATEST)$(EXE_EXT) \
+	$(CLIENTHELLOTEST)$(EXE_EXT)
 
 # $(METHTEST)$(EXE_EXT)
 
@@ -99,7 +101,8 @@ OBJ=	$(BNTEST).o $(ECTEST).o  $(ECDSATEST).o $(ECDHTEST).o $(IDEATEST).o \
 	$(BFTEST).o  $(SSLTEST).o  $(DSATEST).o  $(EXPTEST).o $(RSATEST).o \
 	$(CHACHATEST).o $(POLY1305TEST).o $(AEADTEST).o \
 	$(EVPTEST).o $(EVPEXTRATEST).o $(IGETEST).o $(JPAKETEST).o $(ASN1TEST).o $(V3NAMETEST).o \
-	$(HEARTBEATTEST).o $(CONSTTIMETEST).o $(VERIFYEXTRATEST).o
+	$(HEARTBEATTEST).o $(CONSTTIMETEST).o $(VERIFYEXTRATEST).o \
+	$(CLIENTHELLOTEST).o
 
 SRC=	$(BNTEST).c $(ECTEST).c  $(ECDSATEST).c $(ECDHTEST).c $(IDEATEST).c \
 	$(MD2TEST).c  $(MD4TEST).c $(MD5TEST).c \
@@ -110,7 +113,8 @@ SRC=	$(BNTEST).c $(ECTEST).c  $(ECDSATEST).c $(ECDHTEST).c $(IDEATEST).c \
 	$(BFTEST).c  $(SSLTEST).c $(DSATEST).c   $(EXPTEST).c $(RSATEST).c \
 	$(CHACHATEST).c $(POLY1305TEST).c $(AEADTEST).c \
 	$(EVPTEST).c $(EVPEXTRATEST).c $(IGETEST).c $(JPAKETEST).c $(SRPTEST).c $(ASN1TEST).c \
-	$(V3NAMETEST).c $(HEARTBEATTEST).c $(CONSTTIMETEST).c $(VERIFYEXTRATEST).c
+	$(V3NAMETEST).c $(HEARTBEATTEST).c $(CONSTTIMETEST).c $(VERIFYEXTRATEST).c \
+	$(CLIENTHELLOTEST).c
 
 EXHEADER= 
 HEADER=	testutil.h $(EXHEADER)
@@ -155,7 +159,7 @@ alltests: \
 	test_ss test_ca test_engine test_evp test_evp_extra test_ssl test_tsa test_ige \
 	test_jpake test_srp test_cms test_ocsp test_v3name test_heartbeat \
 	test_chacha test_poly1305 test_aead \
-	test_constant_time test_verify_extra
+	test_constant_time test_verify_extra test_clienthello
 
 test_evp: $(EVPTEST)$(EXE_EXT) evptests.txt
 	../util/shlib_wrap.sh ./$(EVPTEST) evptests.txt
@@ -373,6 +377,10 @@ test_verify_extra: $(VERIFYEXTRATEST)$(EXE_EXT)
 	@echo $(START) $@
 	../util/shlib_wrap.sh ./$(VERIFYEXTRATEST)
 
+test_clienthello: $(CLIENTHELLOTEST)$(EXE_EXT)
+	@echo $(START) $@
+	../util/shlib_wrap.sh ./$(CLIENTHELLOTEST)
+
 lint:
 	lint -DLINT $(INCLUDES) $(SRC)>fluff
 
@@ -556,6 +564,9 @@ $(CONSTTIMETEST)$(EXE_EXT): $(CONSTTIMETEST).o
 $(VERIFYEXTRATEST)$(EXE_EXT): $(VERIFYEXTRATEST).o
 	@target=$(VERIFYEXTRATEST) $(BUILD_CMD)
 
+$(CLIENTHELLOTEST)$(EXE_EXT): $(CLIENTHELLOTEST).o
+	@target=$(CLIENTHELLOTEST) $(BUILD_CMD)
+
 #$(AESTEST).o: $(AESTEST).c
 #	$(CC) -c $(CFLAGS) -DINTERMEDIATE_VALUE_KAT -DTRACE_KAT_MCT $(AESTEST).c
 
@@ -601,6 +612,25 @@ bntest.o: ../include/openssl/stack.h ../include/openssl/symhacks.h
 bntest.o: ../include/openssl/x509.h ../include/openssl/x509_vfy.h bntest.c
 casttest.o: ../e_os.h ../include/openssl/cast.h ../include/openssl/e_os2.h
 casttest.o: ../include/openssl/opensslconf.h casttest.c
+clienthellotest.o: ../include/openssl/asn1.h ../include/openssl/bio.h
+clienthellotest.o: ../include/openssl/buffer.h ../include/openssl/comp.h
+clienthellotest.o: ../include/openssl/crypto.h ../include/openssl/dtls1.h
+clienthellotest.o: ../include/openssl/e_os2.h ../include/openssl/ec.h
+clienthellotest.o: ../include/openssl/ecdh.h ../include/openssl/ecdsa.h
+clienthellotest.o: ../include/openssl/evp.h ../include/openssl/hmac.h
+clienthellotest.o: ../include/openssl/kssl.h ../include/openssl/lhash.h
+clienthellotest.o: ../include/openssl/obj_mac.h ../include/openssl/objects.h
+clienthellotest.o: ../include/openssl/opensslconf.h
+clienthellotest.o: ../include/openssl/opensslv.h ../include/openssl/ossl_typ.h
+clienthellotest.o: ../include/openssl/pem.h ../include/openssl/pem2.h
+clienthellotest.o: ../include/openssl/pkcs7.h ../include/openssl/pqueue.h
+clienthellotest.o: ../include/openssl/safestack.h ../include/openssl/sha.h
+clienthellotest.o: ../include/openssl/srtp.h ../include/openssl/ssl.h
+clienthellotest.o: ../include/openssl/ssl2.h ../include/openssl/ssl23.h
+clienthellotest.o: ../include/openssl/ssl3.h ../include/openssl/stack.h
+clienthellotest.o: ../include/openssl/symhacks.h ../include/openssl/tls1.h
+clienthellotest.o: ../include/openssl/x509.h ../include/openssl/x509_vfy.h
+clienthellotest.o: clienthellotest.c
 constant_time_test.o: ../crypto/constant_time_locl.h ../e_os.h
 constant_time_test.o: ../include/openssl/e_os2.h
 constant_time_test.o: ../include/openssl/opensslconf.h constant_time_test.c
