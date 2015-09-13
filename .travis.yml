@@ -3,11 +3,11 @@ language:
 
 os:
  - linux
- - osx
+# - osx
 
 compiler:
  - gcc
- - clang
+# - clang
 
 env:
   global:
