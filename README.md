@@ -10,7 +10,7 @@ You're looking at the 1.0.2-chacha branch, which aligns with the OpenSSL_1_0_2-s
 The main reason of the fork is to include ChaCha20, Poly1305, other (experimental/insecure) ciphers, and to add some extra features to s_client. It should compile 'as least as good' as the official OpenSSL_1_0_2-stable branch.
 
 #### Latest news
-This branch is up to date with the OpenSSL 1.0.2d version, and contains the fix for CVE-2015-1793 from 19-07-2015.
+This branch is up to date with the OpenSSL 1.0.2e version, and contains the fixes for CVE-2015-3193, CVE-2015-3194 and CVE-2015-3195 from 03-12-2015.
 
 #### Security notices
 Please note that some security restrictions have been removed on purpose: In contrast of the official fork, this version of openssl for instance [does not restrict the size of DH parameters restriction](https://github.com/PeterMosmans/openssl/commit/1fb62ccc6360a4c29fc24fbc0ec82508356752fc). It also enables an extra number of ciphers, so please be aware to explicity enable only those ciphers that you trust.
