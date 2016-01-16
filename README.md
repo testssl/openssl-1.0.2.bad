@@ -38,7 +38,7 @@ Please see [https://www.onwebsecurity.com/openssl/replacing-chacha20poly1305-a-n
 * [Enabled experimental features](https://github.com/PeterMosmans/openssl/commit/8c722ce5fb005a1886e2d76e788cc3441592490e)
 * [Enabled even more ciphers](https://github.com/PeterMosmans/openssl/commit/c77a5fc708c9e88bce2c0c742f419ac908cd44d)
 * [Removed the DH parameters restriction](https://github.com/PeterMosmans/openssl/commit/1fb62ccc6360a4c29fc24fbc0ec82508356752fc)
-* [Re-enabled certain export ciphers](https://github.com/PeterMosmans/openssl/commit/ 8ae2e1d49308e0b1ff2e91beca1ad04e6e163a9a)
+* [Re-enabled certain export ciphers](https://github.com/PeterMosmans/openssl/commit/8ae2e1d49308e0b1ff2e91beca1ad04e6e163a9a)
 
 ##### s_client
 * [-no_tlsext addition] (https://github.com/PeterMosmans/openssl/commit/c1348037c3bdf6a2c024f3572f0d1141b5d57e4f)
