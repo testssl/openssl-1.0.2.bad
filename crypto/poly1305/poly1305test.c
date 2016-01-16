@@ -51,6 +51,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../e_os.h"
+
 #if !defined(OPENSSL_NO_POLY1305)
 
 #include <openssl/poly1305.h>
