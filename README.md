@@ -9,17 +9,16 @@ You're looking at the 1.0.2-chacha branch, which aligns with the OpenSSL_1_0_2-s
 
 The main reason of the fork is to include ChaCha20, Poly1305, other (experimental/insecure) ciphers, and to add some extra features to s_client. It should compile 'as least as good' as the official OpenSSL_1_0_2-stable branch.
 
+#### Security notices
+Please note that some security restrictions have been removed on purpose: In contrast of the official fork, this version of openssl for instance [does not restrict the size of DH parameters](https://github.com/PeterMosmans/openssl/commit/1fb62ccc6360a4c29fc24fbc0ec82508356752fc). It also enables a lot of extra ciphers deemed *insecure*, so please be aware to explicity enable only those ciphers that you trust, and disable the rest.
+
 #### Latest news
 This branch is up to date with the OpenSSL 1.0.2e version, and contains the fixes for CVE-2015-3193, CVE-2015-3194 and CVE-2015-3195 from 03-12-2015.
-
-#### Security notices
-Please note that some security restrictions have been removed on purpose: In contrast of the official fork, this version of openssl for instance [does not restrict the size of DH parameters restriction](https://github.com/PeterMosmans/openssl/commit/1fb62ccc6360a4c29fc24fbc0ec82508356752fc). It also enables an extra number of ciphers, so please be aware to explicity enable only those ciphers that you trust.
-
 
 #### Goals
 The main goals of this fork are
 
-1. add as much ciphers and (test)functionality as possible
+1. add as much ciphers and (test) functionality as possible
 2. to keep the source as aligned to the original as possible
 3. keep the patches transparent (easily applicable to the original source)
 4. keep the patches maintainable
@@ -39,6 +38,7 @@ Please see [https://www.onwebsecurity.com/openssl/replacing-chacha20poly1305-a-n
 * [Enabled experimental features](https://github.com/PeterMosmans/openssl/commit/8c722ce5fb005a1886e2d76e788cc3441592490e)
 * [Enabled even more ciphers](https://github.com/PeterMosmans/openssl/commit/c77a5fc708c9e88bce2c0c742f419ac908cd44d)
 * [Removed the DH parameters restriction](https://github.com/PeterMosmans/openssl/commit/1fb62ccc6360a4c29fc24fbc0ec82508356752fc)
+* [Re-enabled certain export ciphers](https://github.com/PeterMosmans/openssl/commit/ 8ae2e1d49308e0b1ff2e91beca1ad04e6e163a9a)
 
 ##### s_client
 * [-no_tlsext addition] (https://github.com/PeterMosmans/openssl/commit/c1348037c3bdf6a2c024f3572f0d1141b5d57e4f)
@@ -47,6 +47,7 @@ Please see [https://www.onwebsecurity.com/openssl/replacing-chacha20poly1305-a-n
 * [-starttls xmpp improvement (RT #2860)](https://github.com/PeterMosmans/openssl/commit/854eb9c88da8b742c1d77a11058fcd0d4036c0da)
 * [-starttls ldap support (RT #2665)](https://github.com/PeterMosmans/openssl/commit/f7e338776d998cb2f2d9ff133473cc87b337821a)
 * [-fix Windows blocking (RT #3464)](https://github.com/PeterMosmans/openssl/commit/68ab9b308e173072e5015063be7e194bec1f311f)
+
 ##### generic
 * Minor changes to Makefiles to simplify building using the mingw / mingw64 platform on Windows
 * [-universal build time instead of local build time](https://github.com/PeterMosmans/openssl/commit/51cf1c9043efdc06937c0d3550ff8f6fd8e43e1f)
@@ -202,20 +203,20 @@ openssl ciphers -l -V "ALL:COMPLEMENTOFALL"
           0x00,0x96 - SEED-SHA                SSLv3 Kx=RSA      Au=RSA  Enc=SEED(128) Mac=SHA1
           0x00,0x41 - CAMELLIA128-SHA         SSLv3 Kx=RSA      Au=RSA  Enc=Camellia(128) Mac=SHA1
           0x00,0x07 - IDEA-CBC-SHA            SSLv3 Kx=RSA      Au=RSA  Enc=IDEA(128) Mac=SHA1
-     0x05,0x00,0x80 - IDEA-CBC-MD5            SSLv2 Kx=RSA      Au=RSA  Enc=IDEA(128) Mac=MD5 
-     0x03,0x00,0x80 - RC2-CBC-MD5             SSLv2 Kx=RSA      Au=RSA  Enc=RC2(128)  Mac=MD5 
+     0x05,0x00,0x80 - IDEA-CBC-MD5            SSLv2 Kx=RSA      Au=RSA  Enc=IDEA(128) Mac=MD5
+     0x03,0x00,0x80 - RC2-CBC-MD5             SSLv2 Kx=RSA      Au=RSA  Enc=RC2(128)  Mac=MD5
           0x00,0x94 - RSA-PSK-AES128-CBC-SHA  SSLv3 Kx=RSAPSK   Au=RSA  Enc=AES(128)  Mac=SHA1
           0x00,0x8C - PSK-AES128-CBC-SHA      SSLv3 Kx=PSK      Au=PSK  Enc=AES(128)  Mac=SHA1
           0xC0,0x11 - ECDHE-RSA-RC4-SHA       SSLv3 Kx=ECDH     Au=RSA  Enc=RC4(128)  Mac=SHA1
           0xC0,0x07 - ECDHE-ECDSA-RC4-SHA     SSLv3 Kx=ECDH     Au=ECDSA Enc=RC4(128)  Mac=SHA1
           0x00,0x66 - DHE-DSS-RC4-SHA         SSLv3 Kx=DH       Au=DSS  Enc=RC4(128)  Mac=SHA1
           0xC0,0x16 - AECDH-RC4-SHA           SSLv3 Kx=ECDH     Au=None Enc=RC4(128)  Mac=SHA1
-          0x00,0x18 - ADH-RC4-MD5             SSLv3 Kx=DH       Au=None Enc=RC4(128)  Mac=MD5 
+          0x00,0x18 - ADH-RC4-MD5             SSLv3 Kx=DH       Au=None Enc=RC4(128)  Mac=MD5
           0xC0,0x0C - ECDH-RSA-RC4-SHA        SSLv3 Kx=ECDH/RSA Au=ECDH Enc=RC4(128)  Mac=SHA1
           0xC0,0x02 - ECDH-ECDSA-RC4-SHA      SSLv3 Kx=ECDH/ECDSA Au=ECDH Enc=RC4(128)  Mac=SHA1
           0x00,0x05 - RC4-SHA                 SSLv3 Kx=RSA      Au=RSA  Enc=RC4(128)  Mac=SHA1
-          0x00,0x04 - RC4-MD5                 SSLv3 Kx=RSA      Au=RSA  Enc=RC4(128)  Mac=MD5 
-     0x01,0x00,0x80 - RC4-MD5                 SSLv2 Kx=RSA      Au=RSA  Enc=RC4(128)  Mac=MD5 
+          0x00,0x04 - RC4-MD5                 SSLv3 Kx=RSA      Au=RSA  Enc=RC4(128)  Mac=MD5
+     0x01,0x00,0x80 - RC4-MD5                 SSLv2 Kx=RSA      Au=RSA  Enc=RC4(128)  Mac=MD5
           0x00,0x92 - RSA-PSK-RC4-SHA         SSLv3 Kx=RSAPSK   Au=RSA  Enc=RC4(128)  Mac=SHA1
           0x00,0x8A - PSK-RC4-SHA             SSLv3 Kx=PSK      Au=PSK  Enc=RC4(128)  Mac=SHA1
           0xC0,0x12 - ECDHE-RSA-DES-CBC3-SHA  SSLv3 Kx=ECDH     Au=RSA  Enc=3DES(168) Mac=SHA1
@@ -232,11 +233,10 @@ openssl ciphers -l -V "ALL:COMPLEMENTOFALL"
           0xC0,0x0D - ECDH-RSA-DES-CBC3-SHA   SSLv3 Kx=ECDH/RSA Au=ECDH Enc=3DES(168) Mac=SHA1
           0xC0,0x03 - ECDH-ECDSA-DES-CBC3-SHA SSLv3 Kx=ECDH/ECDSA Au=ECDH Enc=3DES(168) Mac=SHA1
           0x00,0x0A - DES-CBC3-SHA            SSLv3 Kx=RSA      Au=RSA  Enc=3DES(168) Mac=SHA1
-          0x00,0x61 - EXP1024-RC2-CBC-MD5     SSLv3 Kx=RSA(1024) Au=RSA  Enc=RC2(56)   Mac=MD5  export
-     0x07,0x00,0xC0 - DES-CBC3-MD5            SSLv2 Kx=RSA      Au=RSA  Enc=3DES(168) Mac=MD5 
+     0x07,0x00,0xC0 - DES-CBC3-MD5            SSLv2 Kx=RSA      Au=RSA  Enc=3DES(168) Mac=MD5
           0x00,0x93 - RSA-PSK-3DES-EDE-CBC-SHA SSLv3 Kx=RSAPSK   Au=RSA  Enc=3DES(168) Mac=SHA1
           0x00,0x8B - PSK-3DES-EDE-CBC-SHA    SSLv3 Kx=PSK      Au=PSK  Enc=3DES(168) Mac=SHA1
-     0x08,0x00,0x80 - RC4-64-MD5              SSLv2 Kx=RSA      Au=RSA  Enc=RC4(64)   Mac=MD5 
+     0x08,0x00,0x80 - RC4-64-MD5              SSLv2 Kx=RSA      Au=RSA  Enc=RC4(64)   Mac=MD5
           0x00,0x63 - EXP1024-DHE-DSS-DES-CBC-SHA SSLv3 Kx=DH(1024) Au=DSS  Enc=DES(56)   Mac=SHA1 export
           0x00,0x15 - EDH-RSA-DES-CBC-SHA     SSLv3 Kx=DH       Au=RSA  Enc=DES(56)   Mac=SHA1
           0x00,0x12 - EDH-DSS-DES-CBC-SHA     SSLv3 Kx=DH       Au=DSS  Enc=DES(56)   Mac=SHA1
@@ -245,7 +245,8 @@ openssl ciphers -l -V "ALL:COMPLEMENTOFALL"
           0x00,0x1A - ADH-DES-CBC-SHA         SSLv3 Kx=DH       Au=None Enc=DES(56)   Mac=SHA1
           0x00,0x62 - EXP1024-DES-CBC-SHA     SSLv3 Kx=RSA(1024) Au=RSA  Enc=DES(56)   Mac=SHA1 export
           0x00,0x09 - DES-CBC-SHA             SSLv3 Kx=RSA      Au=RSA  Enc=DES(56)   Mac=SHA1
-     0x06,0x00,0x40 - DES-CBC-MD5             SSLv2 Kx=RSA      Au=RSA  Enc=DES(56)   Mac=MD5 
+          0x00,0x61 - EXP1024-RC2-CBC-MD5     SSLv3 Kx=RSA(1024) Au=RSA  Enc=RC2(56)   Mac=MD5  export
+     0x06,0x00,0x40 - DES-CBC-MD5             SSLv2 Kx=RSA      Au=RSA  Enc=DES(56)   Mac=MD5
           0x00,0x65 - EXP1024-DHE-DSS-RC4-SHA SSLv3 Kx=DH(1024) Au=DSS  Enc=RC4(56)   Mac=SHA1 export
           0x00,0x64 - EXP1024-RC4-SHA         SSLv3 Kx=RSA(1024) Au=RSA  Enc=RC4(56)   Mac=SHA1 export
           0x00,0x60 - EXP1024-RC4-MD5         SSLv3 Kx=RSA(1024) Au=RSA  Enc=RC4(56)   Mac=MD5  export
@@ -269,6 +270,6 @@ openssl ciphers -l -V "ALL:COMPLEMENTOFALL"
           0xC0,0x01 - ECDH-ECDSA-NULL-SHA     SSLv3 Kx=ECDH/ECDSA Au=ECDH Enc=None      Mac=SHA1
           0x00,0x3B - NULL-SHA256             TLSv1.2 Kx=RSA      Au=RSA  Enc=None      Mac=SHA256
           0x00,0x02 - NULL-SHA                SSLv3 Kx=RSA      Au=RSA  Enc=None      Mac=SHA1
-          0x00,0x01 - NULL-MD5                SSLv3 Kx=RSA      Au=RSA  Enc=None      Mac=MD5 
+          0x00,0x01 - NULL-MD5                SSLv3 Kx=RSA      Au=RSA  Enc=None      Mac=MD5
      0x00,0x00,0x00 - NULL-MD5                SSLv2 Kx=RSA(512) Au=RSA  Enc=None      Mac=MD5  export
 ```
