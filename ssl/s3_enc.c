@@ -537,11 +537,18 @@ int ssl3_enc(SSL *s, int send)
 
             /* we need to add 'i-1' padding bytes */
             l += i;
+#ifdef BREAK_PADDING
+            /* break padding */
+            for(size_t j = 0; j < i; ++j) {
+                rec->input[rec->length + j] = rand() % 256;
+            }
+#else
             /*
              * the last of these zero bytes will be overwritten with the
              * padding length.
              */
             memset(&rec->input[rec->length], 0, i);
+#endif
             rec->length += i;
             rec->input[l - 1] = (i - 1);
         }

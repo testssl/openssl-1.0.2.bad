@@ -1024,8 +1024,18 @@ int tls1_enc(SSL *s, int send)
                 if (s->s3->flags & TLS1_FLAGS_TLS_PADDING_BUG)
                     j++;
             }
-            for (k = (int)l; k < (int)(l + i); k++)
-                rec->input[k] = j;
+            for (k = (int)l; k < (int)(l + i); k++) {
+#ifdef BREAK_PADDING
+                /* break padding */
+                if (k < (int)(l + i - 1)) {
+                    rec->input[k] = rand() % 256;
+                } else {
+#endif
+                    rec->input[k] = j;
+#ifdef BREAK_PADDING
+                }
+#endif
+            }
             l += i;
             rec->length += i;
         }
