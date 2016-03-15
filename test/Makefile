@@ -383,8 +383,8 @@ test_clienthello: $(CLIENTHELLOTEST)$(EXE_EXT)
 	../util/shlib_wrap.sh ./$(CLIENTHELLOTEST)
 
 test_sslv2conftest: $(SSLV2CONFTEST)$(EXE_EXT)
-	@echo $(START) $@
-	../util/shlib_wrap.sh ./$(SSLV2CONFTEST)
+	@echo "This test has been disabled on 1.0.2-chacha"
+#	../util/shlib_wrap.sh ./$(SSLV2CONFTEST)
 
 lint:
 	lint -DLINT $(INCLUDES) $(SRC)>fluff
