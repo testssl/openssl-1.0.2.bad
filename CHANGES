@@ -4,6 +4,18 @@
 
  Changes between 1.0.2g and 1.0.2h [xx XXX xxxx]
 
+  *) Modify behavior of ALPN to invoke callback after SNI/servername
+     callback, such that updates to the SSL_CTX affect ALPN.
+     [Todd Short]
+
+  *) Remove LOW from the DEFAULT cipher list.  This removes singles DES from the
+     default.
+     [Kurt Roeckx]
+
+  *) Only remove the SSLv2 methods with the no-ssl2-method option. When the
+     methods are enabled and ssl2 is disabled the methods return NULL.
+     [Kurt Roeckx]
+
  Changes between 1.0.2f and 1.0.2g [1 Mar 2016]
 
   * Builds that are not configured with "enable-ssl2" will not support SSLv2.
