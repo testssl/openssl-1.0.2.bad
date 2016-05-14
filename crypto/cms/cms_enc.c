@@ -179,10 +179,9 @@ BIO *cms_EncryptedContent_init_bio(CMS_EncryptedContentInfo *ec)
                CMS_R_CIPHER_INITIALISATION_ERROR);
         goto err;
     }
-
-    if (piv) {
+    if (enc) {
         calg->parameter = ASN1_TYPE_new();
-        if (!calg->parameter) {
+        if (calg->parameter == NULL) {
             CMSerr(CMS_F_CMS_ENCRYPTEDCONTENT_INIT_BIO, ERR_R_MALLOC_FAILURE);
             goto err;
         }
@@ -190,6 +189,11 @@ BIO *cms_EncryptedContent_init_bio(CMS_EncryptedContentInfo *ec)
             CMSerr(CMS_F_CMS_ENCRYPTEDCONTENT_INIT_BIO,
                    CMS_R_CIPHER_PARAMETER_INITIALISATION_ERROR);
             goto err;
+        }
+        /* If parameter type not set omit parameter */
+        if (calg->parameter->type == V_ASN1_UNDEF) {
+            ASN1_TYPE_free(calg->parameter);
+            calg->parameter = NULL;
         }
     }
     ok = 1;
