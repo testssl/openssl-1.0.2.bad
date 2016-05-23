@@ -32,6 +32,7 @@ Please see [https://www.onwebsecurity.com/openssl/replacing-chacha20poly1305-a-n
 #### Additions
 ##### Ciphers
 * Added ChaCha20 and Poly1305 ciphers (backported from the upstream 1.0.2-aead branch)
++ [Re-enabled elliptic curves < 256 bit](https://github.com/PeterMosmans/openssl/commit/f340dabc859192f9805919793834094b14e55a9b)
 * [Added TLS-RSA-PSK ciphers](https://github.com/PeterMosmans/openssl/commit/ba47950a02a380413f3e5dbf8d94a89eb9e2fb42)
 * [Added SHA256 CAMELLIA ciphers (cherry-picked from the upstream master branch)](https://github.com/PeterMosmans/openssl/commit/535e141f0e9df912232a6bd2ece72f30945962a1)
 * [Added HMAC based CAMELLIA ciphers](https://github.com/PeterMosmans/openssl/commit/8efbb71e40b99e86741aafd6a3c95b941a26e5ce)
