@@ -573,12 +573,12 @@ int tls1_shared_curve(SSL *s, int nmatch)
      * are allowed.
      */
     if (num_supp == 0 && (s->options & SSL_OP_CIPHER_SERVER_PREFERENCE) != 0) {
-        supp = eccurves_all;
-        num_supp = sizeof(eccurves_all) / 2;
+        supp = eccurves_default;
+        num_supp = sizeof(eccurves_default) / 2;
     } else if (num_pref == 0 &&
         (s->options & SSL_OP_CIPHER_SERVER_PREFERENCE) == 0) {
-        pref = eccurves_all;
-        num_pref = sizeof(eccurves_all) / 2;
+        pref = eccurves_default;
+        num_pref = sizeof(eccurves_default) / 2;
     }
 
     k = 0;
