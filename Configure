@@ -1253,6 +1253,7 @@ my $shared_extension = $fields[$idx_shared_extension];
 my $ranlib = $ENV{'RANLIB'} || $fields[$idx_ranlib];
 my $ar = $ENV{'AR'} || "ar";
 my $arflags = $fields[$idx_arflags];
+my $windres = $ENV{'RC'} || $ENV{'WINDRES'} || "windres";
 my $multilib = $fields[$idx_multilib];
 my $chacha_obj = $fields[$idx_chacha_obj];
 my $poly1305_obj = $fields[$idx_poly1305_obj];
@@ -1730,12 +1731,14 @@ while (<IN>)
 		s/^AR=\s*/AR= \$\(CROSS_COMPILE\)/;
 		s/^NM=\s*/NM= \$\(CROSS_COMPILE\)/;
 		s/^RANLIB=\s*/RANLIB= \$\(CROSS_COMPILE\)/;
+		s/^RC=\s*/RC= \$\(CROSS_COMPILE\)/;
 		s/^MAKEDEPPROG=.*$/MAKEDEPPROG= \$\(CROSS_COMPILE\)$cc/ if $cc eq "gcc";
 		}
 	else	{
 		s/^CC=.*$/CC= $cc/;
 		s/^AR=\s*ar/AR= $ar/;
 		s/^RANLIB=.*/RANLIB= $ranlib/;
+		s/^RC=.*/RC= $windres/;
 		s/^MAKEDEPPROG=.*$/MAKEDEPPROG= $cc/ if $cc eq "gcc";
 		s/^MAKEDEPPROG=.*$/MAKEDEPPROG= $cc/ if $ecc eq "gcc" || $ecc eq "clang";
 		}
