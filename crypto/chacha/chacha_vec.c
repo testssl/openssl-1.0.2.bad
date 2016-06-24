@@ -64,7 +64,7 @@
 #endif
 
 /* Architecture-neutral way to specify 16-byte vector of ints              */
-typedef unsigned vec __attribute__ ((vector_size (16)));
+typedef unsigned vec __attribute__((vector_size (16)));
 
 /* This implementation is designed for Neon, SSE and AltiVec machines. The
  * following specify how to do certain vector operations efficiently on
