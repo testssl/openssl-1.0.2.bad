@@ -992,6 +992,8 @@ static int check_cert(X509_STORE_CTX *ctx)
     ctx->current_issuer = NULL;
     ctx->current_crl_score = 0;
     ctx->current_reasons = 0;
+    if (x->ex_flags & EXFLAG_PROXY)
+        return 1;
     while (ctx->current_reasons != CRLDP_ALL_REASONS) {
         last_reasons = ctx->current_reasons;
         /* Try to retrieve relevant CRL */
@@ -1130,7 +1132,11 @@ static int get_crl_sk(X509_STORE_CTX *ctx, X509_CRL **pcrl, X509_CRL **pdcrl,
             if (ASN1_TIME_diff(&day, &sec, X509_CRL_get_lastUpdate(best_crl),
                                X509_CRL_get_lastUpdate(crl)) == 0)
                 continue;
-            if (day < 0 || sec <= 0)
+            /*
+             * ASN1_TIME_diff never returns inconsistent signs for |day|
+             * and |sec|.
+             */
+            if (day <= 0 && sec <= 0)
                 continue;
         }
         best_crl = crl;
