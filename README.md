@@ -13,7 +13,7 @@ The main reason of the fork is to include ChaCha20, Poly1305, other (experimenta
 Please note that some security restrictions have been removed on purpose: In contrast of the official fork, this version of openssl for instance [does not restrict the size of DH parameters](https://github.com/PeterMosmans/openssl/commit/1fb62ccc6360a4c29fc24fbc0ec82508356752fc). It also enables a lot of extra ciphers deemed *insecure*, so please be aware to explicity enable only those ciphers that you trust, and disable the rest.
 
 #### Latest news
-This branch is up to date with the OpenSSL 1.0.2i-dev version, and contains the fixes for CVE-2016-2108, CVE-2016-2176, CVE-2016-2106 and CVE-2016-2105 from 03-05-2016.
+This branch is up to date with the OpenSSL 1.0.2j-dev version, and contains the fixes for CVE-2016-6304 from 09-09-2016 (and all earlier published CVE fixes).
 
 #### Goals
 The main goals of this fork are
