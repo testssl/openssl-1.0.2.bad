@@ -2295,6 +2295,23 @@ static int ssl_scan_clienthello_tlsext(SSL *s, unsigned char **p,
                 size -= 2;
                 if (dsize > size)
                     goto err;
+
+                /*
+                 * We remove any OCSP_RESPIDs from a previous handshake
+                 * to prevent unbounded memory growth - CVE-2016-6304
+                 */
+                sk_OCSP_RESPID_pop_free(s->tlsext_ocsp_ids,
+                                        OCSP_RESPID_free);
+                if (dsize > 0) {
+                    s->tlsext_ocsp_ids = sk_OCSP_RESPID_new_null();
+                    if (s->tlsext_ocsp_ids == NULL) {
+                        *al = SSL_AD_INTERNAL_ERROR;
+                        return 0;
+                    }
+                } else {
+                    s->tlsext_ocsp_ids = NULL;
+                }
+
                 while (dsize > 0) {
                     OCSP_RESPID *id;
                     int idsize;
@@ -2313,13 +2330,6 @@ static int ssl_scan_clienthello_tlsext(SSL *s, unsigned char **p,
                     if (data != sdata) {
                         OCSP_RESPID_free(id);
                         goto err;
-                    }
-                    if (!s->tlsext_ocsp_ids
-                        && !(s->tlsext_ocsp_ids =
-                             sk_OCSP_RESPID_new_null())) {
-                        OCSP_RESPID_free(id);
-                        *al = SSL_AD_INTERNAL_ERROR;
-                        return 0;
                     }
                     if (!sk_OCSP_RESPID_push(s->tlsext_ocsp_ids, id)) {
                         OCSP_RESPID_free(id);
@@ -2691,6 +2701,11 @@ static int ssl_scan_serverhello_tlsext(SSL *s, unsigned char **p,
                 *al = TLS1_AD_INTERNAL_ERROR;
                 return 0;
             }
+            /*
+             * Could be non-NULL if server has sent multiple NPN extensions in
+             * a single Serverhello
+             */
+            OPENSSL_free(s->next_proto_negotiated);
             s->next_proto_negotiated = OPENSSL_malloc(selected_len);
             if (!s->next_proto_negotiated) {
                 *al = TLS1_AD_INTERNAL_ERROR;
@@ -3380,9 +3395,7 @@ static int tls_decrypt_ticket(SSL *s, const unsigned char *etick,
     HMAC_CTX hctx;
     EVP_CIPHER_CTX ctx;
     SSL_CTX *tctx = s->initial_ctx;
-    /* Need at least keyname + iv + some encrypted data */
-    if (eticklen < 48)
-        return 2;
+
     /* Initialize session ticket encryption and HMAC contexts */
     HMAC_CTX_init(&hctx);
     EVP_CIPHER_CTX_init(&ctx);
@@ -3416,6 +3429,13 @@ static int tls_decrypt_ticket(SSL *s, const unsigned char *etick,
     if (mlen < 0) {
         goto err;
     }
+    /* Sanity check ticket length: must exceed keyname + IV + HMAC */
+    if (eticklen <= 16 + EVP_CIPHER_CTX_iv_length(&ctx) + mlen) {
+        HMAC_CTX_cleanup(&hctx);
+        EVP_CIPHER_CTX_cleanup(&ctx);
+        return 2;
+    }
+
     eticklen -= mlen;
     /* Check HMAC of encrypted ticket */
     if (HMAC_Update(&hctx, etick, eticklen) <= 0

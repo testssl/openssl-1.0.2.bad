@@ -125,7 +125,7 @@
 /* mod 128 saturating subtract of two 64-bit values in big-endian order */
 static int satsub64be(const unsigned char *v1, const unsigned char *v2)
 {
-    int ret, sat, brw, i;
+    int ret, i;
 
     if (sizeof(long) == 8)
         do {
@@ -157,28 +157,51 @@ static int satsub64be(const unsigned char *v1, const unsigned char *v2)
                 return (int)l;
         } while (0);
 
-    ret = (int)v1[7] - (int)v2[7];
-    sat = 0;
-    brw = ret >> 8;             /* brw is either 0 or -1 */
-    if (ret & 0x80) {
-        for (i = 6; i >= 0; i--) {
-            brw += (int)v1[i] - (int)v2[i];
-            sat |= ~brw;
-            brw >>= 8;
-        }
-    } else {
-        for (i = 6; i >= 0; i--) {
-            brw += (int)v1[i] - (int)v2[i];
-            sat |= brw;
-            brw >>= 8;
+    ret = 0;
+    for (i=0; i<7; i++) {
+        if (v1[i] > v2[i]) {
+            /* v1 is larger... but by how much? */
+            if (v1[i] != v2[i] + 1)
+                return 128;
+            while (++i <= 6) {
+                if (v1[i] != 0x00 || v2[i] != 0xff)
+                    return 128; /* too much */
+            }
+            /* We checked all the way to the penultimate byte,
+             * so despite higher bytes changing we actually
+             * know that it only changed from (e.g.)
+             *       ... (xx)  ff ff ff ??
+             * to   ... (xx+1) 00 00 00 ??
+             * so we add a 'bias' of 256 for the carry that
+             * happened, and will eventually return
+             * 256 + v1[7] - v2[7]. */
+            ret = 256;
+            break;
+        } else if (v2[i] > v1[i]) {
+            /* v2 is larger... but by how much? */
+            if (v2[i] != v1[i] + 1)
+                return -128;
+            while (++i <= 6) {
+                if (v2[i] != 0x00 || v1[i] != 0xff)
+                    return -128; /* too much */
+            }
+            /* Similar to the case above, we know it changed
+             * from    ... (xx)  00 00 00 ??
+             * to     ... (xx-1) ff ff ff ??
+             * so we add a 'bias' of -256 for the borrow,
+             * to return -256 + v1[7] - v2[7]. */
+            ret = -256;
         }
     }
-    brw <<= 8;                  /* brw is either 0 or -256 */
 
-    if (sat & 0xff)
-        return brw | 0x80;
+    ret += (int)v1[7] - (int)v2[7];
+
+    if (ret > 128)
+        return 128;
+    else if (ret < -128)
+        return -128;
     else
-        return brw + (ret & 0xFF);
+        return ret;
 }
 
 static int have_handshake_fragment(SSL *s, int type, unsigned char *buf,
@@ -928,6 +951,13 @@ int dtls1_read_bytes(SSL *s, int type, unsigned char *buf, int len, int peek)
         goto start;
     }
 
+    /*
+     * Reset the count of consecutive warning alerts if we've got a non-empty
+     * record that isn't an alert.
+     */
+    if (rr->type != SSL3_RT_ALERT && rr->length != 0)
+        s->cert->alert_count = 0;
+
     /* we now have a packet which can be read and processed */
 
     if (s->s3->change_cipher_spec /* set when we receive ChangeCipherSpec,
@@ -1194,6 +1224,14 @@ int dtls1_read_bytes(SSL *s, int type, unsigned char *buf, int len, int peek)
 
         if (alert_level == SSL3_AL_WARNING) {
             s->s3->warn_alert = alert_descr;
+
+            s->cert->alert_count++;
+            if (s->cert->alert_count == MAX_WARN_ALERT_COUNT) {
+                al = SSL_AD_UNEXPECTED_MESSAGE;
+                SSLerr(SSL_F_DTLS1_READ_BYTES, SSL_R_TOO_MANY_WARN_ALERTS);
+                goto f_err;
+            }
+
             if (alert_descr == SSL_AD_CLOSE_NOTIFY) {
 #ifndef OPENSSL_NO_SCTP
                 /*
@@ -1251,7 +1289,7 @@ int dtls1_read_bytes(SSL *s, int type, unsigned char *buf, int len, int peek)
             BIO_snprintf(tmp, sizeof tmp, "%d", alert_descr);
             ERR_add_error_data(2, "SSL alert number ", tmp);
             s->shutdown |= SSL_RECEIVED_SHUTDOWN;
-            SSL_CTX_remove_session(s->ctx, s->session);
+            SSL_CTX_remove_session(s->session_ctx, s->session);
             return (0);
         } else {
             al = SSL_AD_ILLEGAL_PARAMETER;
@@ -1965,6 +2003,12 @@ void dtls1_reset_seq_numbers(SSL *s, int rw)
         s->d1->r_epoch++;
         memcpy(&(s->d1->bitmap), &(s->d1->next_bitmap), sizeof(DTLS1_BITMAP));
         memset(&(s->d1->next_bitmap), 0x00, sizeof(DTLS1_BITMAP));
+
+        /*
+         * We must not use any buffered messages received from the previous
+         * epoch
+         */
+        dtls1_clear_received_buffer(s);
     } else {
         seq = s->s3->write_sequence;
         memcpy(s->d1->last_write_sequence, seq,
