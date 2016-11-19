@@ -373,6 +373,7 @@ int MAIN(int, char **);
 
 int MAIN(int argc, char **argv)
 {
+    ENGINE *e = NULL;
     unsigned char *buf = NULL, *buf2 = NULL;
     int mret = 1;
     long count = 0, save_count = 0;
@@ -751,7 +752,7 @@ int MAIN(int argc, char **argv)
                 BIO_printf(bio_err, "no engine given\n");
                 goto end;
             }
-            setup_engine(bio_err, *argv, 0);
+            e = setup_engine(bio_err, *argv, 0);
             /*
              * j will be increased again further down.  We just don't want
              * speed to confuse an engine with an algorithm, especially when
@@ -2562,6 +2563,7 @@ int MAIN(int argc, char **argv)
     }
 # endif
 
+    release_engine(e);
     apps_shutdown();
     OPENSSL_EXIT(mret);
 }

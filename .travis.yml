@@ -14,3 +14,4 @@ compiler:
 
 script:
   - ./config enable-static-engine enable-ec_nistp_64_gcc_128 enable-gost enable-idea enable-md2 enable-rc5 enable-rfc3779 enable-ssl-trace enable-ssl2 enable-ssl3 enable-zlib experimental-jpake no-zlib-dynamic 1>/dev/null && make depend 1>/dev/null && make 1>/dev/null && make test
+
