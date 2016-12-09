@@ -58,8 +58,12 @@ my $usage="Usage: Configure [no-<cipher> ...] [enable-<cipher> ...] [experimenta
 # zlib-dynamic	Like "zlib", but the zlib library is expected to be a shared
 #		library and will be loaded in run-time by the OpenSSL library.
 # sctp          include SCTP support
-# 386           generate 80386 code
-# no-sse2	disables IA-32 SSE2 code, above option implies no-sse2
+# enable-weak-ssl-ciphers
+#		Enable EXPORT and LOW SSLv3 ciphers that are disabled by
+#		default.
+# 386		generate 80386 code in assembly modules
+# no-sse2	disables IA-32 SSE2 code in assembly modules, the above
+#		mentioned '386' option implies this one
 # no-<cipher>   build without specified algorithm (rsa, idea, rc5, ...)
 # -<xxx> +<xxx> compiler options are passed through 
 #
