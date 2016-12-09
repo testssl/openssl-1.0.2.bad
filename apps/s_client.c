@@ -400,7 +400,7 @@ static void sc_usage(void)
                "                 'prot' defines which one to assume.  Currently,\n");
     BIO_printf(bio_err,
                "                 only \"smtp\", \"pop3\", \"imap\", \"ftp\", \"xmpp\"\n");
-    BIO_printf(bio_err, "                 \"telnet\" and \"ldap\" are supported.\n");
+    BIO_printf(bio_err, "                 \"telnet\", \"ldap\" and \"postgres\" are supported.\n");
     BIO_printf(bio_err, "                 are supported.\n");
     BIO_printf(bio_err," -xmpphost host - When used with \"-starttls xmpp\" specifies the virtual host.\n");
 #ifndef OPENSSL_NO_ENGINE
@@ -657,8 +657,9 @@ enum {
     PROTO_IMAP,
     PROTO_FTP,
     PROTO_XMPP,
-	PROTO_TELNET,
-	PROTO_LDAP
+    PROTO_TELNET,
+    PROTO_LDAP,
+    PROTO_POSTGRES
 };
 
 int MAIN(int, char **);
@@ -1105,6 +1106,8 @@ int MAIN(int argc, char **argv)
                 starttls_proto = PROTO_TELNET;
             else if (strcmp(*argv, "ldap") == 0)
                 starttls_proto = PROTO_LDAP;
+            else if (strcmp(*argv, "postgres") == 0)
+                starttls_proto = PROTO_POSTGRES;
             else
                 goto bad;
         }
@@ -1790,6 +1793,23 @@ int MAIN(int argc, char **argv)
         ASN1_TYPE_free(atyp);
     }
 
+        if (starttls_proto == PROTO_POSTGRES) {
+            static const unsigned char ssl_request[] = {
+                /* Length        SSLRequest */
+                   0, 0, 0, 8,   4, 210, 22, 47
+            };
+            int bytes;
+
+            /* Send SSLRequest packet */
+            BIO_write(sbio, ssl_request, 8);
+            (void)BIO_flush(sbio);
+
+            /* Reply will be a single S if SSL is enabled */
+            bytes = BIO_read(sbio, sbuf, BUFSIZZ);
+            if (bytes != 1 || sbuf[0] != 'S')
+                goto shut;
+        }
+
     for (;;) {
         FD_ZERO(&readfds);
         FD_ZERO(&writefds);
@@ -2179,6 +2199,7 @@ int MAIN(int argc, char **argv)
             write_ssl = 1;
             read_tty = 0;
         }
+        break;
     }
 
     ret = 0;
