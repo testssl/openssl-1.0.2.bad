@@ -13,7 +13,7 @@ The main reason of the fork is to include ChaCha20, Poly1305, other (experimenta
 Please note that some security restrictions have been removed on purpose: In contrast of the official fork, this version of openssl for instance [does not restrict the size of DH parameters](https://github.com/PeterMosmans/openssl/commit/1fb62ccc6360a4c29fc24fbc0ec82508356752fc). It also enables a lot of extra ciphers deemed *insecure*, so please be aware to explicity enable only those ciphers that you trust, and disable the rest.
 
 #### Latest news
-This branch is up to date with the OpenSSL 1.0.2j-dev version, and contains the fixes for CVE-2016-6304 from 09-09-2016 (and all earlier published CVE fixes).
+This branch is up to date with the OpenSSL 1.0.2jkdev version, and contains the fixes for CVE-2016-6304 from 09-09-2016 (and all earlier published CVE fixes).
 
 #### Goals
 The main goals of this fork are
@@ -47,6 +47,7 @@ Please see [https://www.onwebsecurity.com/openssl/replacing-chacha20poly1305-a-n
 * -starttls telnet (RT #2451)
 * [-starttls xmpp improvement (RT #2860)](https://github.com/PeterMosmans/openssl/commit/854eb9c88da8b742c1d77a11058fcd0d4036c0da)
 * [-starttls ldap support (RT #2665)](https://github.com/PeterMosmans/openssl/commit/f7e338776d998cb2f2d9ff133473cc87b337821a)
+* [-starttls postgres support (github #683)](https://github.com/PeterMosmans/openssl/commit/6191e6ba1357085c8480ff93ed9cd8c2a8928b1d)
 * [-fix Windows blocking (RT #3464)](https://github.com/PeterMosmans/openssl/commit/68ab9b308e173072e5015063be7e194bec1f311f)
 
 ##### generic
@@ -59,7 +60,6 @@ Please see [https://www.onwebsecurity.com/openssl/replacing-chacha20poly1305-a-n
 * [Dirk Wetter](https://github.com/drwetter)
 * [Hubert Kario](https://github.com/tomato42)
 * [Stefan Zehl](https://github.com/Sec42)
-
 
 #### Windows binaries
 The latest binary Windows 64-bit builds of these branches can be found at http://onwebsecurity.com/cryptography/openssl
