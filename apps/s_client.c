@@ -2199,7 +2199,6 @@ int MAIN(int argc, char **argv)
             write_ssl = 1;
             read_tty = 0;
         }
-        break;
     }
 
     ret = 0;
