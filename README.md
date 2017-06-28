@@ -5,15 +5,24 @@ Build status for target linux-x86_64: [![Build Status](https://travis-ci.org/Pet
 
 This is a fork of the official OpenSSL github repository at https://github.com/openssl/openssl.git
 
-You're looking at the 1.0.2-chacha branch, which aligns with the OpenSSL_1_0_2-stable branch. The source from the official branch is merged on a regular base.
+You're looking at the 1.0.2-chacha branch, which aligns with the
+`OpenSSL_1_0_2-stable` branch. The source from the official branch is merged on a
+regular base.
 
-The main reason of the fork is to include ChaCha20, Poly1305, other (experimental/insecure) ciphers, and to add some extra features to s_client. It should compile 'as least as good' as the official OpenSSL_1_0_2-stable branch.
+The main reason of the fork is to include ChaCha20, Poly1305, other
+(experimental/insecure) ciphers, and to add some extra features to s_client. It
+should compile 'as least as good' as the official `OpenSSL_1_0_2-stable` branch.
 
 #### Security notices
-Please note that some security restrictions have been removed on purpose: In contrast of the official fork, this version of openssl for instance [does not restrict the size of DH parameters](https://github.com/PeterMosmans/openssl/commit/1fb62ccc6360a4c29fc24fbc0ec82508356752fc). It also enables a lot of extra ciphers deemed *insecure*, so please be aware to explicity enable only those ciphers that you trust, and disable the rest.
+Please note that some security restrictions have been removed on purpose: In
+contrast of the official fork, this version of openssl for
+instance
+[does not restrict the size of DH parameters](https://github.com/PeterMosmans/openssl/commit/1fb62ccc6360a4c29fc24fbc0ec82508356752fc).
+It also enables a lot of extra ciphers deemed *insecure*, so please be aware to
+explicity enable only those ciphers that you trust, and disable the rest.
 
 #### Latest news
-This branch is up to date with the OpenSSL 1.0.2jkdev version, and contains the fixes for CVE-2016-6304 from 09-09-2016 (and all earlier published CVE fixes).
+This branch is up to date with the OpenSSL 1.0.2k dev version, and contains the fixes for CVE-2016-6304 from 09-09-2016 (and all earlier published CVE fixes).
 
 #### Goals
 The main goals of this fork are
@@ -25,9 +34,9 @@ The main goals of this fork are
 5. write as little custom/new code as possible
 
 #### More information
-See [https://www.onwebsecurity.com/openssl/the-work-flow-of-the-full-featured-openssl-fork-chacha20poly1305](https://www.onwebsecurity.com/openssl/the-work-flow-of-the-full-featured-openssl-fork-chacha20poly1305) for detailed differences between the official openssl source and this fork, and on the workflow of keeping everything as up-to-date as possible.
+See [https://www.onwebsecurity.com/announcements/the-work-flow-of-the-full-featured-openssl-fork-chacha20poly1305.html](https://www.onwebsecurity.com/announcements/the-work-flow-of-the-full-featured-openssl-fork-chacha20poly1305.html) for detailed differences between the official openssl source and this fork, and on the workflow of keeping everything as up-to-date as possible.
 
-Please see [https://www.onwebsecurity.com/openssl/replacing-chacha20poly1305-a-new-owner](https://www.onwebsecurity.com/openssl/replacing-chacha20poly1305-a-new-owner) for information about the future of the current ChaCha20 / Poly1305 code.
+Please see [https://www.onwebsecurity.com/announcements/replacing-chacha20poly1305-a-new-owner.html](https://www.onwebsecurity.com/announcements/replacing-chacha20poly1305-a-new-owner.html) for information about the future of the current ChaCha20 / Poly1305 code.
 
 #### Additions
 ##### Ciphers
@@ -42,7 +51,7 @@ Please see [https://www.onwebsecurity.com/openssl/replacing-chacha20poly1305-a-n
 * [Re-enabled certain export ciphers](https://github.com/PeterMosmans/openssl/commit/8ae2e1d49308e0b1ff2e91beca1ad04e6e163a9a)
 
 ##### s_client
-* [-no_tlsext addition] (https://github.com/PeterMosmans/openssl/commit/c1348037c3bdf6a2c024f3572f0d1141b5d57e4f)
+* [-no_tlsext addition](https://github.com/PeterMosmans/openssl/commit/c1348037c3bdf6a2c024f3572f0d1141b5d57e4f)
 * -proxy (RT #2651)
 * -starttls telnet (RT #2451)
 * [-starttls xmpp improvement (RT #2860)](https://github.com/PeterMosmans/openssl/commit/854eb9c88da8b742c1d77a11058fcd0d4036c0da)
@@ -64,8 +73,7 @@ Please see [https://www.onwebsecurity.com/openssl/replacing-chacha20poly1305-a-n
 * [David Cooper](https://github.com/dcooper16)
 
 #### Windows binaries
-The latest binary Windows 64-bit builds of these branches can be found at http://onwebsecurity.com/cryptography/openssl
-The OpenSSL version string of these binaries (#define OPENSSL_VERSION_TEXT) include the branch name and commit hash.
+The latest binary Windows 64-bit builds of these branches can be found at [https://www.onwebsecurity.com/pages/openssl.html](https://www.onwebsecurity.com/pages/openssl.html)
 
 Please see the official OpenSSL repository for all relevant license / copyright info. This repository is merely a fork of their great work with some minimal merges, additions and changes.
 
