@@ -59,6 +59,7 @@ Please see [https://www.onwebsecurity.com/announcements/replacing-chacha20poly13
 * [-starttls postgres support (github #683)](https://github.com/PeterMosmans/openssl/commit/6191e6ba1357085c8480ff93ed9cd8c2a8928b1d)
 * [-starttls postgres support (fix)](https://github.com/PeterMosmans/openssl/commit/0a4848da6e8f3a6915f05cdd22f83e59dfa2edcc)
 * [-fix Windows blocking (RT #3464)](https://github.com/PeterMosmans/openssl/commit/68ab9b308e173072e5015063be7e194bec1f311f)
+* [backported MySQL support from master](https://github.com/PeterMosmans/openssl/commit/72657fd9dc4341079e716b737c0c01ec4007a434)
 
 ##### generic
 * Minor changes to Makefiles to simplify building using the mingw / mingw64 platform on Windows
@@ -71,9 +72,12 @@ Please see [https://www.onwebsecurity.com/announcements/replacing-chacha20poly13
 * [Hubert Kario](https://github.com/tomato42)
 * [Stefan Zehl](https://github.com/Sec42)
 * [David Cooper](https://github.com/dcooper16)
+* [Steven Danneman](https://github.com/sdann)
 
 #### Windows binaries
-The latest binary Windows 64-bit builds of these branches can be found at [https://www.onwebsecurity.com/pages/openssl.html](https://www.onwebsecurity.com/pages/openssl.html)
+The latest binary Windows 64-bit builds of these branches can be found
+at
+[https://www.onwebsecurity.com/pages/openssl.html](https://www.onwebsecurity.com/pages/openssl.html)
 
 Please see the official OpenSSL repository for all relevant license / copyright info. This repository is merely a fork of their great work with some minimal merges, additions and changes.
 
