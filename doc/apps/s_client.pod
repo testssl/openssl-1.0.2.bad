@@ -235,7 +235,8 @@ use the server's cipher preferences; only used for SSLV2.
 
 send the protocol-specific message(s) to switch to TLS for communication.
 B<protocol> is a keyword for the intended protocol.  Currently, the only
-supported keywords are "smtp", "pop3", "imap", "ftp" and "xmpp".
+supported keywords are "smtp", "pop3", "imap", "ftp", "xmpp", "telnet", 
+"ldap", "mysql", "postgres" and "irc".
 
 =item B<-xmpphost hostname>
 
