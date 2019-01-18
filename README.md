@@ -9,7 +9,7 @@ You're looking at the 1.0.2-chacha branch, which aligns with the
 `OpenSSL_1_0_2-stable` branch. The source from the official branch is merged on a
 regular base.
 
-The main reason of the fork is to include ChaCha20, Poly1305, other
+The main reason of the fork is to include (the old) ChaCha20, Poly1305, other
 (experimental/insecure) ciphers, and to add some extra features to s_client. It
 should compile 'as least as good' as the official `OpenSSL_1_0_2-stable` branch.
 
@@ -56,6 +56,9 @@ Please see [https://www.onwebsecurity.com/announcements/replacing-chacha20poly13
 * -starttls telnet (RT #2451)
 * [-starttls xmpp improvement (RT #2860)](https://github.com/PeterMosmans/openssl/commit/854eb9c88da8b742c1d77a11058fcd0d4036c0da)
 * [-starttls ldap support (RT #2665)](https://github.com/PeterMosmans/openssl/commit/f7e338776d998cb2f2d9ff133473cc87b337821a)
+* [-starttls irc support](https://github.com/drwetter/openssl-pm-snapshot/commit/9893b31525c9f8b33cb46351b5c714895aea4775)
+* [-starttls nntp support](https://github.com/drwetter/openssl-pm-snapshot/commit/33862cef59f479234403693c48ae5bbe3ea557ee)
+* [-starttls ltmp support](https://github.com/drwetter/openssl-pm-snapshot/commit/0b014bdbc4e56ae371779da15953d9f6ab076403)
 * [-starttls postgres support (github #683)](https://github.com/PeterMosmans/openssl/commit/6191e6ba1357085c8480ff93ed9cd8c2a8928b1d)
 * [-starttls postgres support (fix)](https://github.com/PeterMosmans/openssl/commit/0a4848da6e8f3a6915f05cdd22f83e59dfa2edcc)
 * [-fix Windows blocking (RT #3464)](https://github.com/PeterMosmans/openssl/commit/68ab9b308e173072e5015063be7e194bec1f311f)
