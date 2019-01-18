@@ -400,8 +400,8 @@ static void sc_usage(void)
     BIO_printf(bio_err,
                "                 'prot' defines which one to assume.  Currently,\n");
     BIO_printf(bio_err,
-               "                 only \"smtp\", \"pop3\", \"imap\", \"ftp\", \"xmpp\"\n");
-    BIO_printf(bio_err, "                 \"telnet\", \"ldap\", \"mysql\", \"postgres\" and \"irc\"\n");
+               "                 only \"smtp\", \"pop3\", \"imap\", \"ftp\", \"xmpp\", \"telnet\",\n");
+    BIO_printf(bio_err, "                 \"ldap\", \"mysql\", \"postgres\", \"irc\" and \"nntp\"\n");
     BIO_printf(bio_err, "                 are supported.\n");
     BIO_printf(bio_err," -xmpphost host - When used with \"-starttls xmpp\" specifies the virtual host.\n");
 #ifndef OPENSSL_NO_ENGINE
@@ -662,7 +662,8 @@ enum {
     PROTO_LDAP,
     PROTO_POSTGRES,
     PROTO_MYSQL,
-    PROTO_IRC
+    PROTO_IRC,
+    PROTO_NNTP
 };
 
 int MAIN(int, char **);
@@ -1115,6 +1116,8 @@ int MAIN(int argc, char **argv)
                 starttls_proto = PROTO_MYSQL;
             else if (strcmp(*argv, "irc") == 0)
                 starttls_proto = PROTO_IRC;
+            else if (strcmp(*argv, "nntp") == 0)
+		starttls_proto = PROTO_NNTP;
             else
                 goto bad;
         }
@@ -1834,6 +1837,45 @@ int MAIN(int argc, char **argv)
             bytes = BIO_read(sbio, sbuf, BUFSIZZ);
             if (bytes != 1 || sbuf[0] != 'S')
                 goto shut;
+        }
+
+        if (starttls_proto == PROTO_NNTP) {
+            int foundit = 0;
+            BIO *fbio = BIO_new(BIO_f_buffer());
+
+            BIO_push(fbio, sbio);
+            BIO_gets(fbio, mbuf, BUFSIZZ);
+            /* STARTTLS command requires CAPABILITIES... */
+            BIO_printf(fbio, "CAPABILITIES\r\n");
+            (void)BIO_flush(fbio);
+            BIO_gets(fbio, mbuf, BUFSIZZ);
+            /* no point in trying to parse the CAPABILITIES response if there is none */
+            if (strstr(mbuf, "101") != NULL) {
+                /* wait for multi-line CAPABILITIES response */
+                do {
+                    mbuf_len = BIO_gets(fbio, mbuf, BUFSIZZ);
+                    if (strstr(mbuf, "STARTTLS"))
+                        foundit = 1;
+                   } while (mbuf_len > 1 && mbuf[0] != '.');
+            }
+            (void)BIO_flush(fbio);
+            BIO_pop(fbio);
+            BIO_free(fbio);
+            if (!foundit)
+                BIO_printf(bio_err,
+                           "Didn't find STARTTLS in server response,"
+                           " trying anyway...\n");
+            BIO_printf(sbio, "STARTTLS\r\n");
+            mbuf_len = BIO_read(sbio, mbuf, BUFSIZZ);
+            if (mbuf_len < 0) {
+                BIO_printf(bio_err, "BIO_read failed\n");
+                goto end;
+            }
+            mbuf[mbuf_len] = '\0';
+            if (strstr(mbuf, "382") == NULL) {
+                BIO_printf(bio_err, "STARTTLS failed: %s", mbuf);
+                goto shut;
+            }
         }
 
         if (starttls_proto == PROTO_IRC) {
