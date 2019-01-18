@@ -394,13 +394,13 @@ static void sc_usage(void)
     BIO_printf(bio_err,
                "                 command to see what is available\n");
     BIO_printf(bio_err,
-               " -starttls prot - use the STARTTLS command before starting TLS\n");
+               " -starttls prot - use the STARTTLS command before starting TLS for\n");
     BIO_printf(bio_err,
-               "                 for those protocols that support it, where\n");
+               "                 those protocols that support it, where 'prot'\n");
     BIO_printf(bio_err,
-               "                 'prot' defines which one to assume.  Currently,\n");
+               "                 defines which one to assume. Currently, only\n");
     BIO_printf(bio_err,
-               "                 only \"smtp\", \"pop3\", \"imap\", \"ftp\", \"xmpp\", \"telnet\",\n");
+               "                 \"smtp\", \"lmtp\". \"pop3\", \"imap\", \"ftp\", \"xmpp\", \"telnet\",\n");
     BIO_printf(bio_err, "                 \"ldap\", \"mysql\", \"postgres\", \"irc\" and \"nntp\"\n");
     BIO_printf(bio_err, "                 are supported.\n");
     BIO_printf(bio_err," -xmpphost host - When used with \"-starttls xmpp\" specifies the virtual host.\n");
@@ -654,6 +654,7 @@ static int serverinfo_cli_parse_cb(SSL *s, unsigned int ext_type,
 enum {
     PROTO_OFF = 0,
     PROTO_SMTP,
+    PROTO_LMTP,
     PROTO_POP3,
     PROTO_IMAP,
     PROTO_FTP,
@@ -1098,6 +1099,8 @@ int MAIN(int argc, char **argv)
             ++argv;
             if (strcmp(*argv, "smtp") == 0)
                 starttls_proto = PROTO_SMTP;
+            else if (strcmp(*argv, "lmtp") == 0)
+                starttls_proto = PROTO_LMTP;
             else if (strcmp(*argv, "pop3") == 0)
                 starttls_proto = PROTO_POP3;
             else if (strcmp(*argv, "imap") == 0)
@@ -1663,19 +1666,23 @@ int MAIN(int argc, char **argv)
      * BIO into the chain that is removed again later on to not disturb the
      * rest of the s_client operation.
      */
-    if (starttls_proto == PROTO_SMTP) {
+    if ( (starttls_proto == PROTO_SMTP) || (starttls_proto == PROTO_LMTP) ) {
         int foundit = 0;
         BIO *fbio = BIO_new(BIO_f_buffer());
         BIO_push(fbio, sbio);
-        /* wait for multi-line response to end from SMTP */
+        /* wait for multi-line response to end from SMTP or LMTP */
         do {
             mbuf_len = BIO_gets(fbio, mbuf, BUFSIZZ);
         }
         while (mbuf_len > 3 && mbuf[3] == '-');
-        /* STARTTLS command requires EHLO... */
-        BIO_printf(fbio, "EHLO openssl.client.net\r\n");
+        /* STARTTLS command requires EHLO / LHLO ... */
+        if (starttls_proto == (int)PROTO_LMTP) {
+                BIO_printf(fbio, "LHLO openssl.client.net\r\n");
+        } else {
+                BIO_printf(fbio, "EHLO openssl.client.net\r\n");
+        }
         (void)BIO_flush(fbio);
-        /* wait for multi-line response to end EHLO SMTP response */
+        /* wait for multi-line response to end EHLO SMTP or LMTP LMTP response */
         do {
             mbuf_len = BIO_gets(fbio, mbuf, BUFSIZZ);
             if (strstr(mbuf, "STARTTLS"))
