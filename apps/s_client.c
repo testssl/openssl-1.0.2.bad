@@ -403,7 +403,7 @@ static void sc_usage(void)
                "                 \"smtp\", \"lmtp\". \"pop3\", \"imap\", \"ftp\", \"xmpp\", \"telnet\",\n");
     BIO_printf(bio_err, "                 \"ldap\", \"mysql\", \"postgres\", \"irc\" and \"nntp\"\n");
     BIO_printf(bio_err, "                 are supported.\n");
-    BIO_printf(bio_err," -xmpphost host - When used with \"-starttls xmpp\" specifies the virtual host.\n");
+    BIO_printf(bio_err," -xmpphost host - When used with \"-starttls xmpp[-server]\" specifies the virtual host.\n");
 #ifndef OPENSSL_NO_ENGINE
     BIO_printf(bio_err,
                " -engine id    - Initialise and use the specified engine\n");
@@ -659,6 +659,7 @@ enum {
     PROTO_IMAP,
     PROTO_FTP,
     PROTO_XMPP,
+    PROTO_XMPP_SERVER,
     PROTO_TELNET,
     PROTO_LDAP,
     PROTO_POSTGRES,
@@ -1105,6 +1106,8 @@ int MAIN(int argc, char **argv)
                 starttls_proto = PROTO_IMAP;
             else if (strcmp(*argv, "ftp") == 0)
                 starttls_proto = PROTO_FTP;
+            else if (strcmp(*argv, "xmpp-server") == 0)
+                starttls_proto = PROTO_XMPP_SERVER;
             else if (strcmp(*argv, "xmpp") == 0)
                 starttls_proto = PROTO_XMPP;
             else if (strcmp(*argv, "telnet") == 0)
@@ -1738,11 +1741,12 @@ int MAIN(int argc, char **argv)
         BIO_printf(sbio, "AUTH TLS\r\n");
         BIO_read(sbio, sbuf, BUFSIZZ);
     }
-    if (starttls_proto == PROTO_XMPP) {
+    if ( (starttls_proto == PROTO_XMPP) || (starttls_proto == PROTO_XMPP_SERVER) ) {
         int seen = 0;
         BIO_printf(sbio, "<stream:stream "
                    "xmlns:stream='http://etherx.jabber.org/streams' "
-                   "xmlns='jabber:client' to='%s' version='1.0'>",
+                   "xmlns='jabber:%s' to='%s' version='1.0'>",
+                   starttls_proto == PROTO_XMPP ? "client" : "server",
                    xmpphost ? xmpphost : host);
         seen = BIO_read(sbio, mbuf, BUFSIZZ);
         mbuf[seen] = 0;
