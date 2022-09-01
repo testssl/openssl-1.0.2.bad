@@ -1,13 +1,10 @@
 OpenSSL
 ================
 
-Build status for target linux-x86_64: [![Build Status](https://travis-ci.org/PeterMosmans/openssl.svg?branch=1.0.2-chacha)](https://travis-ci.org/PeterMosmans/openssl)
+This is a fork of Peter Mosmans https://github.com/PeterMosmans/openssl (openssl-1.0.2-chacha) fork of
+the official OpenSSL github repository at https://github.com/openssl/openssl.git.
 
-This is a fork of the official OpenSSL github repository at https://github.com/openssl/openssl.git
-
-You're looking at the 1.0.2-chacha branch, which aligns with the
-`OpenSSL_1_0_2-stable` branch. The source from the official branch is merged on a
-regular base.
+Peter's branch was amended with an IPv6 patch and some STARTTLS backports.
 
 The main reason of the fork is to include (the old) ChaCha20, Poly1305, other
 (experimental/insecure) ciphers, and to add some extra features to s_client. It
