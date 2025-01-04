@@ -11,12 +11,10 @@ The main reason of the fork is to include (the old) ChaCha20, Poly1305, other
 should compile 'as least as good' as the official `OpenSSL_1_0_2-stable` branch.
 
 #### Security notices
-Please note that some security restrictions have been removed on purpose: In
-contrast of the official fork, this version of openssl for
+Please note that some security restrictions have been removed on purpose: In contrast of the official fork, this version of openssl for
 instance
 [does not restrict the size of DH parameters](https://github.com/PeterMosmans/openssl/commit/1fb62ccc6360a4c29fc24fbc0ec82508356752fc).
-It also enables a lot of extra ciphers deemed *insecure*, so please be aware to
-explicity enable only those ciphers that you trust, and disable the rest.
+It also enables a lot of extra ciphers deemed *insecure*, so please be aware to explicity enable only those ciphers that you trust, and disable the rest.
 
 #### Latest news
 This branch is up to date with the OpenSSL 1.0.2k dev version, and contains the fixes for CVE-2016-6304 from 09-09-2016 (and all earlier published CVE fixes).
@@ -34,6 +32,9 @@ The main goals of this fork are
 See [https://www.onwebsecurity.com/announcements/the-work-flow-of-the-full-featured-openssl-fork-chacha20poly1305.html](https://www.onwebsecurity.com/announcements/the-work-flow-of-the-full-featured-openssl-fork-chacha20poly1305.html) for detailed differences between the official openssl source and this fork, and on the workflow of keeping everything as up-to-date as possible.
 
 Please see [https://www.onwebsecurity.com/announcements/replacing-chacha20poly1305-a-new-owner.html](https://www.onwebsecurity.com/announcements/replacing-chacha20poly1305-a-new-owner.html) for information about the future of the current ChaCha20 / Poly1305 code.
+
+#### Compiling
+See https://github.com/drwetter/testssl.sh/blob/3.2/bin/Readme.md
 
 #### Additions
 ##### Ciphers
