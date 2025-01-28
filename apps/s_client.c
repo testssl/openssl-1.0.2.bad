@@ -401,7 +401,7 @@ static void sc_usage(void)
                "                 defines which one to assume. Currently, only\n");
     BIO_printf(bio_err,
                "                 \"smtp\", \"lmtp\". \"pop3\", \"imap\", \"ftp\", \"xmpp\", \"telnet\",\n");
-    BIO_printf(bio_err, "                 \"ldap\", \"mysql\", \"postgres\", \"irc\" and \"nntp\"\n");
+    BIO_printf(bio_err, "                 \"ldap\", \"mysql\", \"postgres\", \"irc\", \"nntp\" and \"sieve\"\n");
     BIO_printf(bio_err, "                 are supported.\n");
     BIO_printf(bio_err," -xmpphost host - When used with \"-starttls xmpp[-server]\" specifies the virtual host.\n");
 #ifndef OPENSSL_NO_ENGINE
@@ -665,7 +665,8 @@ enum {
     PROTO_POSTGRES,
     PROTO_MYSQL,
     PROTO_IRC,
-    PROTO_NNTP
+    PROTO_NNTP,
+    PROTO_SIEVE
 };
 
 int MAIN(int, char **);
@@ -1122,6 +1123,8 @@ int MAIN(int argc, char **argv)
                 starttls_proto = PROTO_IRC;
             else if (strcmp(*argv, "nntp") == 0)
 		starttls_proto = PROTO_NNTP;
+            else if (strcmp(*argv, "sieve") == 0)
+                 starttls_proto = PROTO_SIEVE;
             else
                 goto bad;
         }
@@ -1749,7 +1752,11 @@ int MAIN(int argc, char **argv)
                    starttls_proto == PROTO_XMPP ? "client" : "server",
                    xmpphost ? xmpphost : host);
         seen = BIO_read(sbio, mbuf, BUFSIZZ);
-        mbuf[seen] = 0;
+        if (seen < 0) {
+                BIO_printf(bio_err, "BIO_read failed\n");
+                goto end;
+        }
+        mbuf[seen] = '\0';
         while (!strstr
                (mbuf, "<starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'") &&
                    !strstr(mbuf, "<starttls xmlns=\"urn:ietf:params:xml:ns:xmpp-tls\"")) {
@@ -1758,15 +1765,19 @@ int MAIN(int argc, char **argv)
             seen = BIO_read(sbio, mbuf, BUFSIZZ);
             if (seen <= 0)
                 goto shut;
-            mbuf[seen] = 0;
+            mbuf[seen] = '\0';
         }
         BIO_printf(sbio,
                    "<starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'/>");
         seen = BIO_read(sbio, sbuf, BUFSIZZ);
-        sbuf[seen] = 0;
+        if (seen < 0) {
+            BIO_printf(bio_err, "BIO_read failed\n");
+            goto shut;
+        }
+        sbuf[seen] = '\0';
         if (!strstr(sbuf, "<proceed"))
             goto shut;
-        mbuf[0] = 0;
+        mbuf[0] = '\0';
     }
 
     if (http_proxy_str) {
@@ -1885,6 +1896,53 @@ int MAIN(int argc, char **argv)
             mbuf[mbuf_len] = '\0';
             if (strstr(mbuf, "382") == NULL) {
                 BIO_printf(bio_err, "STARTTLS failed: %s", mbuf);
+                goto shut;
+            }
+        }
+
+        if (starttls_proto ==  PROTO_SIEVE ) {
+            int foundit = 0;
+            BIO *fbio = BIO_new(BIO_f_buffer());
+
+            BIO_push(fbio, sbio);
+            /* wait for multi-line response to end from Sieve */
+            do {
+                mbuf_len = BIO_gets(fbio, mbuf, BUFSIZZ);
+                /*
+                 * According to RFC 5804 § 1.7, capability
+                 * is case-insensitive, make it uppercase
+                 */
+                if (mbuf_len > 1 && mbuf[0] == '"') {
+                    make_uppercase(mbuf);
+                    if (strncmp(mbuf, "\"STARTTLS\"", 10) == 0)
+                        foundit = 1;
+                }
+            } while (mbuf_len > 1 && mbuf[0] == '"');
+            (void)BIO_flush(fbio);
+            BIO_pop(fbio);
+            BIO_free(fbio);
+            if (!foundit)
+                BIO_printf(bio_err,
+                           "Didn't find STARTTLS in server response,"
+                           " trying anyway...\n");
+            BIO_printf(sbio, "STARTTLS\r\n");
+            mbuf_len = BIO_read(sbio, mbuf, BUFSIZZ);
+            if (mbuf_len < 0) {
+                BIO_printf(bio_err, "BIO_read failed\n");
+                goto end;
+            } else if (mbuf_len < 2) {
+                BIO_printf(bio_err, "Server does not support STARTTLS.\n");
+                goto shut;
+            }
+            /*
+             * According to RFC 5804 § 2.2, response codes are case-
+             * insensitive, make it uppercase but preserve the response.
+             */
+            mbuf[mbuf_len] = '\0';
+            strncpy(sbuf, mbuf, 2);
+            make_uppercase(sbuf);
+            if (strncmp(sbuf, "OK", 2) != 0) {
+                BIO_printf(bio_err, "STARTTLS not supported: %s", mbuf);
                 goto shut;
             }
         }
