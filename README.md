@@ -2,7 +2,7 @@ OpenSSL
 ================
 
 This is a fork of Peter Mosmans https://github.com/PeterMosmans/openssl (openssl-1.0.2-chacha) fork of
-the official OpenSSL github repository at https://github.com/openssl/openssl.git. Peter's branch was amended some STARTTLS backports and with an IPv6 patch, to be applied manually.
+the official OpenSSL github repository at https://github.com/openssl/openssl.git. Peter's branch was amended some STARTTLS backports and with an IPv6 patch.
 
 The main reason of this repo is to include (the old) ChaCha20, Poly1305 and other
 (experimental/insecure) ciphers, and to add some extra features to `s_client`. It
