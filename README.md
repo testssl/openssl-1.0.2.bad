@@ -2,44 +2,35 @@ OpenSSL
 ================
 
 This is a fork of Peter Mosmans https://github.com/PeterMosmans/openssl (openssl-1.0.2-chacha) fork of
-the official OpenSSL github repository at https://github.com/openssl/openssl.git.
+the official OpenSSL github repository at https://github.com/openssl/openssl.git. Peter's branch was amended some STARTTLS backports and with an IPv6 patch, to be applied manually.
 
-Peter's branch was amended with an IPv6 patch and some STARTTLS backports.
-
-The main reason of the fork is to include (the old) ChaCha20, Poly1305, other
-(experimental/insecure) ciphers, and to add some extra features to s_client. It
+The main reason of this repo is to include (the old) ChaCha20, Poly1305 and other
+(experimental/insecure) ciphers, and to add some extra features to `s_client`. It
 should compile 'as least as good' as the official `OpenSSL_1_0_2-stable` branch.
 
-#### Security notices
-Please note that some security restrictions have been removed on purpose: In contrast of the official fork, this version of openssl for
-instance
-[does not restrict the size of DH parameters](https://github.com/PeterMosmans/openssl/commit/1fb62ccc6360a4c29fc24fbc0ec82508356752fc).
-It also enables a lot of extra ciphers deemed *insecure*, so please be aware to explicity enable only those ciphers that you trust, and disable the rest.
+### Security notices
 
-#### Latest news
+The important thing upfront: **DON'T USE THIS FOR PRODUCTION PUPOSES**
+
+Security restrictions have been removed because we want to test how bad the servers are.
+
+This fork enables a lot of extra ciphers deemed *insecure* (e.g. like ANON, NULL, RC2, Single DES ciphers), *insecure* protocols like SSLv2 and SSLv3. Also there's no restriction on the [size of DH parameters](https://github.com/PeterMosmans/openssl/commit/1fb62ccc6360a4c29fc24fbc0ec82508356752fc).
+
+
+#### Latest
+
 This branch is up to date with the OpenSSL 1.0.2k dev version, and contains the fixes for CVE-2016-6304 from 09-09-2016 (and all earlier published CVE fixes).
 
-#### Goals
-The main goals of this fork are
-
-1. add as much ciphers and (test) functionality as possible
-2. to keep the source as aligned to the original as possible
-3. keep the patches transparent (easily applicable to the original source)
-4. keep the patches maintainable
-5. write as little custom/new code as possible
-
-#### More information
-See [https://www.onwebsecurity.com/announcements/the-work-flow-of-the-full-featured-openssl-fork-chacha20poly1305.html](https://www.onwebsecurity.com/announcements/the-work-flow-of-the-full-featured-openssl-fork-chacha20poly1305.html) for detailed differences between the official openssl source and this fork, and on the workflow of keeping everything as up-to-date as possible.
-
-Please see [https://www.onwebsecurity.com/announcements/replacing-chacha20poly1305-a-new-owner.html](https://www.onwebsecurity.com/announcements/replacing-chacha20poly1305-a-new-owner.html) for information about the future of the current ChaCha20 / Poly1305 code.
+Old info from Peter is [here](https://www.onwebsecurity.com/announcements/the-work-flow-of-the-full-featured-openssl-fork-chacha20poly1305.html).
 
 #### Compiling
-See https://github.com/drwetter/testssl.sh/blob/3.2/bin/Readme.md
+See [Readme in this directory](https://github.com/testssl/openssl-1.0.2.bad/blob/1.0.2-bad/00-testssl-stuff/Readme.md) . There's also a [script named make-openssl.sh](https://github.com/testssl/openssl-1.0.2.bad/blob/1.0.2-bad/00-testssl-stuff/make-openssl.sh) which does everything for you.
 
 #### Additions
-##### Ciphers
+
+##### Changes wrt ciphers
 * Added ChaCha20 and Poly1305 ciphers (backported from the upstream 1.0.2-aead branch)
-+ [Re-enabled elliptic curves < 256 bit](https://github.com/PeterMosmans/openssl/commit/f340dabc859192f9805919793834094b14e55a9b)
+* [Re-enabled elliptic curves < 256 bit](https://github.com/PeterMosmans/openssl/commit/f340dabc859192f9805919793834094b14e55a9b)
 * [Added TLS-RSA-PSK ciphers](https://github.com/PeterMosmans/openssl/commit/ba47950a02a380413f3e5dbf8d94a89eb9e2fb42)
 * [Added SHA256 CAMELLIA ciphers (cherry-picked from the upstream master branch)](https://github.com/PeterMosmans/openssl/commit/535e141f0e9df912232a6bd2ece72f30945962a1)
 * [Added HMAC based CAMELLIA ciphers](https://github.com/PeterMosmans/openssl/commit/8efbb71e40b99e86741aafd6a3c95b941a26e5ce)
@@ -48,36 +39,36 @@ See https://github.com/drwetter/testssl.sh/blob/3.2/bin/Readme.md
 * [Removed the DH parameters restriction](https://github.com/PeterMosmans/openssl/commit/1fb62ccc6360a4c29fc24fbc0ec82508356752fc)
 * [Re-enabled certain export ciphers](https://github.com/PeterMosmans/openssl/commit/8ae2e1d49308e0b1ff2e91beca1ad04e6e163a9a)
 
-##### s_client
+##### s_client changes
 * [-no_tlsext addition](https://github.com/PeterMosmans/openssl/commit/c1348037c3bdf6a2c024f3572f0d1141b5d57e4f)
 * -proxy (RT #2651)
 * -starttls telnet (RT #2451)
 * [-starttls xmpp improvement (RT #2860)](https://github.com/PeterMosmans/openssl/commit/854eb9c88da8b742c1d77a11058fcd0d4036c0da)
 * [-starttls ldap support (RT #2665)](https://github.com/PeterMosmans/openssl/commit/f7e338776d998cb2f2d9ff133473cc87b337821a)
-* [-starttls irc support](https://github.com/drwetter/openssl-pm-snapshot/commit/9893b31525c9f8b33cb46351b5c714895aea4775)
-* [-starttls nntp support](https://github.com/drwetter/openssl-pm-snapshot/commit/33862cef59f479234403693c48ae5bbe3ea557ee)
-* [-starttls ltmp support](https://github.com/drwetter/openssl-pm-snapshot/commit/0b014bdbc4e56ae371779da15953d9f6ab076403)
+* [-starttls irc support](https://github.com/testssl/openssl-1.0.2.bad/commit/9893b31525c9f8b33cb46351b5c714895aea4775)
+* [-starttls nntp support](https://github.com/testssl/openssl-1.0.2.bad/commit/33862cef59f479234403693c48ae5bbe3ea557ee)
+* [-starttls sieve support](https://github.com/testssl/openssl-1.0.2.bad/pull/7/commits/cdc2ca27e9fedd9735c8c000fca5f5728341b119)
+* [-starttls ltmp support](https://github.com/testssl/openssl-1.0.2.bad/commit/0b014bdbc4e56ae371779da15953d9f6ab076403)
 * [-starttls postgres support (github #683)](https://github.com/PeterMosmans/openssl/commit/6191e6ba1357085c8480ff93ed9cd8c2a8928b1d)
 * [-starttls postgres support (fix)](https://github.com/PeterMosmans/openssl/commit/0a4848da6e8f3a6915f05cdd22f83e59dfa2edcc)
 * [-fix Windows blocking (RT #3464)](https://github.com/PeterMosmans/openssl/commit/68ab9b308e173072e5015063be7e194bec1f311f)
 * [backported MySQL support from master](https://github.com/PeterMosmans/openssl/commit/72657fd9dc4341079e716b737c0c01ec4007a434)
 
-##### generic
+##### Generic changes
 * Minor changes to Makefiles to simplify building using the mingw / mingw64 platform on Windows
 * [-universal build time instead of local build time](https://github.com/PeterMosmans/openssl/commit/51cf1c9043efdc06937c0d3550ff8f6fd8e43e1f)
 * [Test all SSL ciphers by default (RT #2584)](https://github.com/PeterMosmans/openssl/commit/85f54b0907f8b7bd67336b742b162effb154ed20)
 
 
 #### Thanks to
-* [Dirk Wetter](https://github.com/drwetter)
+* [Dirk Wetter](https://github.com/testssl)
 * [Hubert Kario](https://github.com/tomato42)
 * [Stefan Zehl](https://github.com/Sec42)
 * [David Cooper](https://github.com/dcooper16)
 * [Steven Danneman](https://github.com/sdann)
 
 #### Windows binaries
-The latest binary Windows 64-bit builds of these branches can be found
-at
+Old Windows 64-bit builds can be found at
 [https://www.onwebsecurity.com/pages/openssl.html](https://www.onwebsecurity.com/pages/openssl.html)
 
 Please see the official OpenSSL repository for all relevant license / copyright info. This repository is merely a fork of their great work with some minimal merges, additions and changes.
