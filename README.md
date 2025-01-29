@@ -2,7 +2,7 @@ OpenSSL
 ================
 
 This is a fork of Peter Mosmans https://github.com/PeterMosmans/openssl (openssl-1.0.2-chacha) fork of
-the official OpenSSL github repository at https://github.com/openssl/openssl.git. Peter's branch was amended some STARTTLS backports and with an IPv6 patch, to be applied manually.
+the official OpenSSL github repository at https://github.com/openssl/openssl.git. Peter's branch was amended some STARTTLS backports and with an IPv6 patch.
 
 The main reason of this repo is to include (the old) ChaCha20, Poly1305 and other
 (experimental/insecure) ciphers, and to add some extra features to `s_client`. It
@@ -19,7 +19,7 @@ This fork enables a lot of extra ciphers deemed *insecure* (e.g. like ANON, NULL
 
 #### Latest
 
-This branch is up to date with the OpenSSL 1.0.2k dev version, and contains the fixes for CVE-2016-6304 from 09-09-2016 (and all earlier published CVE fixes).
+This branch is up to date with the OpenSSL 1.0.2k dev version, and contains the fixes for CVE-2022-0778, CVE-2016-6304 (and all earlier published CVE fixes).
 
 Old info from Peter is [here](https://www.onwebsecurity.com/announcements/the-work-flow-of-the-full-featured-openssl-fork-chacha20poly1305.html).
 
