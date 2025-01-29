@@ -384,6 +384,8 @@ int raw_write_stdout(const void *, int);
 # define TM_STOP         1
 double app_tminterval(int stop, int usertime);
 
+void make_uppercase(char *string);
+
 # define OPENSSL_NO_SSL_INTERN
 
 #endif
