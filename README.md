@@ -47,7 +47,7 @@ See [Readme in this directory](https://github.com/testssl/openssl-1.0.2.bad/blob
 * [-starttls ldap support (RT #2665)](https://github.com/PeterMosmans/openssl/commit/f7e338776d998cb2f2d9ff133473cc87b337821a)
 * [-starttls irc support](https://github.com/testssl/openssl-1.0.2.bad/commit/9893b31525c9f8b33cb46351b5c714895aea4775)
 * [-starttls nntp support](https://github.com/testssl/openssl-1.0.2.bad/commit/33862cef59f479234403693c48ae5bbe3ea557ee)
-* [-starttls sieve support](https://github.com/testssl/openssl-1.0.2.bad/pull/7/commits/cdc2ca27e9fedd9735c8c000fca5f5728341b119)
+* [-starttls sieve support](https://github.com/testssl/openssl-1.0.2.bad/commit/de1a0fe832d05d8a288aa21abf3cd457abe67a14)
 * [-starttls ltmp support](https://github.com/testssl/openssl-1.0.2.bad/commit/0b014bdbc4e56ae371779da15953d9f6ab076403)
 * [-starttls postgres support (github #683)](https://github.com/PeterMosmans/openssl/commit/6191e6ba1357085c8480ff93ed9cd8c2a8928b1d)
 * [-starttls postgres support (fix)](https://github.com/PeterMosmans/openssl/commit/0a4848da6e8f3a6915f05cdd22f83e59dfa2edcc)
