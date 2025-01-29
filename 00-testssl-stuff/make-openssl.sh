@@ -11,7 +11,10 @@ enable-ssl2 enable-ssl3 enable-ssl-trace enable-rc5 enable-rc2 \
 enable-gost enable-cms enable-md2 enable-mdc2 enable-ec enable-ec2m enable-ecdh enable-ecdsa \
 enable-seed enable-camellia enable-idea enable-rfc3779 experimental-jpake"
 
-CFLAGS="-Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types"
+# This didn't help, at least it looked like it.
+# Following flags needed to be passed when compiling with gcc 14 flags, see #3
+CFLAGS='-Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types'
+CFLAG=$CFLAGS
 
 
 error() {
