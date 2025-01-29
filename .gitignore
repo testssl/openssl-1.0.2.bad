@@ -5,6 +5,7 @@
 # editor artefacts
 *.swp
 .#*
+.idea
 #*#
 *~
 /.dir-locals.el
@@ -47,6 +48,14 @@
 /apps/CA.pl
 /apps/md4.c
 
+# All Makefiles in subdirs
+apps/Makefile
+crypto/chacha/Makefile
+crypto/ec/Makefile
+crypto/err/Makefile
+crypto/evp/Makefile
+ssl/Makefile
+test/Makefile
 
 # Auto generated headers
 /crypto/buildinf.h

@@ -1521,6 +1521,14 @@ X509_STORE *setup_verify(BIO *bp, char *CAfile, char *CApath)
     return NULL;
 }
 
+void make_uppercase(char *string)
+{
+    int i;
+
+    for (i = 0; string[i] != '\0'; i++)
+        string[i] = toupper((unsigned char)string[i]);
+}
+
 #ifndef OPENSSL_NO_ENGINE
 /* Try to load an engine in a shareable library */
 static ENGINE *try_load_engine(BIO *err, const char *engine, int debug)
