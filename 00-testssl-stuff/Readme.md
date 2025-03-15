@@ -7,8 +7,8 @@ Compilation instructions
 
 If you want to compile OpenSSL yourself, here are the instructions:
 
-1.) ```git clone -depth 1 https://github.com/testssl/openssl-1.0.2.bad &&
-    cd openssl-1.0.2-bad```
+1.) ```git clone --depth 1 https://github.com/testssl/openssl-1.0.2.bad &&
+    cd openssl-1.0.2.bad```
 
 2.) Now, there are two options to compile this. Recommended is the first one below.
 
