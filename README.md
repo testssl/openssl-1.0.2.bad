@@ -19,7 +19,7 @@ This fork enables a lot of extra ciphers deemed *insecure* (e.g. like ANON, NULL
 
 #### Latest
 
-This branch is up to date with the OpenSSL 1.0.2k dev version, and contains the fixes for CVE-2022-0778, CVE-2016-6304 (and all earlier published CVE fixes).
+This branch is up to date with the OpenSSL 1.0.2k dev version, and contains all fixes with high and moderate until 2024, supposed they could pose a problem to the client, e.g. CVE-2016-6304, CVE-2017-3731, CVE-2017-3737, CVE-2019-1559, CVE-2020-1971, CVE-2021-23841, CVE-2021-3712, CVE-2022-0778, CVE-2022-23841, CVE-2023-2650 and all earlier published CVE fixes.
 
 Old info from Peter is [here](https://www.onwebsecurity.com/announcements/the-work-flow-of-the-full-featured-openssl-fork-chacha20poly1305.html).
 
