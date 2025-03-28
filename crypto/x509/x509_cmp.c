@@ -86,6 +86,8 @@ unsigned long X509_issuer_and_serial_hash(X509 *a)
     char *f;
 
     EVP_MD_CTX_init(&ctx);
+     if (f == NULL)
+         goto err; 
     f = X509_NAME_oneline(a->cert_info->issuer, NULL, 0);
     if (!EVP_DigestInit_ex(&ctx, EVP_md5(), NULL))
         goto err;
